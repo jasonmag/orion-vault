@@ -1,0 +1,22 @@
+services:
+  web:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ./bin/rails server -b 0.0.0.0 -p 3000
+    volumes:
+      - .:/rails
+      - sqlite_data:/rails/db/sqlite
+    ports:
+      - "3000:3000"
+    environment:
+      RAILS_ENV: development
+    networks:
+      - network
+
+volumes:
+  sqlite_data:
+
+networks:
+  network:
