@@ -1,0 +1,5 @@
+%div{:style => "text-align: center;"}
+  %h1.text-3xl.font-bold.underline
+    NexDue
+
+= render 'devise/sessions/new', locals: { resource: @resource, resource_name: @resource_name, devise_mapping: @devise_mapping }
