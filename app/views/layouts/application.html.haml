@@ -9,12 +9,12 @@
     = csp_meta_tag
     = yield :head
     %link{:href => "/manifest.json", :rel => "manifest"}/
-    %link{:href => "/icon.png", :rel => "icon", :type => "image/png"}/
-    %link{:href => "/icon.svg", :rel => "icon", :type => "image/svg+xml"}/
-    %link{:href => "/icon.png", :rel => "apple-touch-icon"}/
+    %link{:href => image_path('nextdue_leaf_icon_32x32.png'), :rel => "icon", :type => "image/png"}/
+    %link{:href => image_path('nextdue_leaf_icon_32x32.svg'), :rel => "icon", :type => "image/svg+xml"}/
+    %link{:href => image_path('nextdue_leaf_icon_32x32.png'), :rel => "apple-touch-icon"}/
     = stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload"
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_importmap_tags
-  %body
+  %body.bg-greenleaf
     %main.container.mx-auto.mt-28.px-5
       = yield
