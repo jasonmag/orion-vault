@@ -1,43 +1,5 @@
 %body.bg-background
   .bg-background
-    %header.absolute.inset-x-0.top-0.z-50
-      %nav.flex.items-center.justify-between.p-6.lg:px-8{ aria: { label: "Global" } }
-        .flex.lg:flex-1
-          %a{ href: "#", class: "-m-1.5 p-1.5" }
-            %span.sr-only NexDue
-            %img.h-10.w-10.rounded-full{ src: image_path('nextdue_leaf_icon_64x64.png'), alt: image_path('nextdue_leaf_icon_64x64.svg') }
-        .flex.lg:hidden
-          %button{ type: "button", class: "-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700" }
-            %span.sr-only Open main menu
-            %svg.h-6.w-6{ fill: "none", viewBox: "0 0 24 24", strokeWidth: "1.5", stroke: "currentColor", aria: { hidden: "true" } }
-              %path{ strokeLinecap: "round", strokeLinejoin: "round", d: "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" }
-        .hidden.lg:flex.lg:gap-x-12
-          %a{ href: "#features", class: "text-sm font-semibold leading-6 text-gray-900" } Features
-          %a{ href: "#analytics", class: "text-sm font-semibold leading-6 text-gray-900" } Analytics
-          %a{ href: "#about", class: "text-sm font-semibold leading-6 text-gray-900" } About
-        .hidden.lg:flex.lg:flex-1.lg:justify-end
-          %a{ href: new_user_session_path, class: "text-sm font-semibold leading-6 text-gray-900" } Log in 
-          %span{ aria: { hidden: "true" } } &rarr;
-      .lg:hidden{ role: "dialog", aria: { modal: "true" } }
-        .fixed.inset-0.z-50
-        %div{ class: "fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10" }
-          .flex.items-center.justify-between
-            %a{ href: "#", class: "-m-1.5 p-1.5" }
-              %span.sr-only NexDue
-              %img.h-8.w-auto{ src: "https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600", alt: "" }
-            %button{ type: "button", class: "-m-2.5 rounded-md p-2.5 text-gray-700" }
-              %span.sr-only Close menu
-              %svg.h-6.w-6{ fill: "none", viewBox: "0 0 24 24", strokeWidth: "1.5", stroke: "currentColor", aria: { hidden: "true" } }
-                %path{ strokeLinecap: "round", strokeLinejoin: "round", d: "M6 18L18 6M6 6l12 12" }
-          .mt-6.flow-root
-            %div{ class: "-my-6 divide-y divide-gray-500/10" }
-              .space-y-2.py-6
-                %a{ href: "#", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Product
-                %a{ href: "#", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Features
-                %a{ href: "#", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Marketplace
-                %a{ href: "#", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Company
-              .py-6
-                %a{ href: "#", class: "-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Log in
     .relative.isolate.px-6.pt-14.lg:px-8.mx-auto
       .absolute.inset-x-0.-top-40.-z-10.transform-gpu.overflow-hidden.blur-3xl.sm:-top-80{ aria: { hidden: "true" } }
         %div{ class: "relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]", style: "clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)" }
@@ -53,7 +15,7 @@
           %h1.text-4xl.font-bold.tracking-tight.text-highlight.sm:text-6xl Stay on top of your finances.
           %p.mt-6.text-lg.leading-8.text-gray-600 Effortlessly keeping you ahead of your next payment due—experience a new level of financial clarity and peace of mind.
           .mt-10.flex.items-center.justify-center.gap-x-6
-            %a{ href: new_user_registration_path, class: "rounded-md bg-accent-dark px-3.5 py-2.5 text-sm font-semibold text-gray shadow-sm hover:bg-green focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" } Get started
+            %a{ href: new_user_registration_path, class: "rounded-md %bg-gray-600  px-3.5 py-2.5 text-sm font-semibold text-gray shadow-sm hover:bg-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" } Get started
             %a{ href: "#about", class: "text-sm font-semibold leading-6 text-gray-900" } Learn more 
             %span{ aria: { hidden: "true" } } →
       %div{ class: "absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]", aria: { hidden: "true" } }
