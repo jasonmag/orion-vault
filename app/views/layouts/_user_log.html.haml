@@ -1,0 +1,7 @@
+.hidden.lg:flex.lg:flex-1.lg:justify-end
+    - if user_signed_in?
+        = button_to 'Log out', destroy_user_session_path, method: :delete, class: "text-sm font-semibold leading-6 text-gray-900 flex items-center"
+        %span{ aria: { hidden: "true" }, class: "ml-2" } &#x2716;
+    - else
+        = link_to 'Log in', new_user_session_path, class: "text-sm font-semibold leading-6 text-gray-900 flex items-center"
+        %span{ aria: { hidden: "true" }, class: "ml-2" } &rarr;
