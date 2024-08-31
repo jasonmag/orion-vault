@@ -1,0 +1,11 @@
+%body.bg-background
+  .bg-background
+    .relative.isolate.px-6.pt-14.lg:px-8.mx-auto
+      .mx-auto.max-w-2xl.py-32.sm:py-48.lg:py-56
+        %h1 Editing list
+
+        = render 'form'
+
+        = link_to 'Show', @list
+        \|
+        = link_to 'Back', lists_path

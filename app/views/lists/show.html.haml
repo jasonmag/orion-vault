@@ -1,0 +1,25 @@
+%body.bg-background
+  .bg-background
+    .relative.isolate.px-6.pt-14.lg:px-8.mx-auto
+      .mx-auto.max-w-2xl.py-32.sm:py-48.lg:py-56
+        %p#notice= notice
+
+        %p
+          %b Name:
+          = @list.name
+        %p
+          %b Price:
+          = @list.price
+        %p
+          %b Description:
+          = @list.description
+        %p
+          %b Due date:
+          = @list.due_date
+        %p
+          %b User:
+          = @list.user.email
+
+        = link_to 'Edit', edit_list_path(@list)
+        \|
+        = link_to 'Back', lists_path

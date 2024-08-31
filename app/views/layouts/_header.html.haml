@@ -11,7 +11,7 @@
           %path{ strokeLinecap: "round", strokeLinejoin: "round", d: "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" }
     .hidden.lg:flex.lg:gap-x-12
       - if user_signed_in?
-        %a{ href: "#dues", class: "text-sm font-semibold leading-6 text-gray-900" } Dues
+        %a{ href: "/lists", class: "text-sm font-semibold leading-6 text-gray-900" } Dues
       - if request.path != "/"
         %a{ href: "/", class: "text-sm font-semibold leading-6 text-gray-900" } Home
       %a{ href: "#features", class: "text-sm font-semibold leading-6 text-gray-900" } Features
