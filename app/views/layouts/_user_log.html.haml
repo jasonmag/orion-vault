@@ -1,7 +1,16 @@
-.hidden.lg:flex.lg:flex-1.lg:justify-end
-    - if user_signed_in?
-        = button_to 'Log out', destroy_user_session_path, method: :delete, class: "text-sm font-semibold leading-6 text-gray-900 flex items-center"
-        %span{ aria: { hidden: "true" }, class: "ml-2" } &#x2716;
-    - else
-        = link_to 'Log in', new_user_session_path, class: "text-sm font-semibold leading-6 text-gray-900 flex items-center"
-        %span{ aria: { hidden: "true" }, class: "ml-2" } &rarr;
+- if user_signed_in?
+  - if local_assigns[:mobile]
+    = button_to 'Log out', destroy_user_session_path, method: :delete, class: "-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center"
+    -# %span{ aria: { hidden: "true" }, class: "ml-2" } &#x2716;
+  - else
+    .hidden.lg:flex.lg:flex-1.lg:justify-end
+      = button_to 'Log out', destroy_user_session_path, method: :delete, class: "text-sm font-semibold leading-6 text-gray-900 flex items-center"
+      %span{ aria: { hidden: "true" }, class: "ml-2" } &#x2716;
+- else
+  - if local_assigns[:mobile]
+    = link_to 'Log in', new_user_session_path, class: "-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center"
+    -# %span{ aria: { hidden: "true" }, class: "ml-2" } &rarr;
+  - else
+    .hidden.lg:flex.lg:flex-1.lg:justify-end
+      = link_to 'Log in', new_user_session_path, class: "text-sm font-semibold leading-6 text-gray-900 flex items-center"
+      %span{ aria: { hidden: "true" }, class: "ml-2" } &rarr;
