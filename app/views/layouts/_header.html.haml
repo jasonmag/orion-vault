@@ -3,7 +3,7 @@
     .flex.lg:flex-1
       %a{ href: "/", class: "-m-1.5 p-1.5" }
         %span.sr-only NexDue
-        %img.h-10.w-10.rounded-full{ src: image_path('nextdue_leaf_icon_64x64.png'), alt: image_path('nextdue_leaf_icon_64x64.svg') }
+        %img.h-10.w-10.rounded-full{ src: image_path('nextdue_leaf_icon_64x64.png'), alt: "NexDue Icon" }
     .flex.lg:hidden
       %button{ type: "button", class: "-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700" }
         %span.sr-only Open main menu
@@ -18,7 +18,7 @@
       %a{ href: "#analytics", class: "text-sm font-semibold leading-6 text-gray-900" } Analytics
       %a{ href: "#about", class: "text-sm font-semibold leading-6 text-gray-900" } About
     
-    = render "layouts/user_log"
+    = render "layouts/user_log", mobile: false
 
   .lg:hidden{ role: "dialog", aria: { modal: "true" } }
     .fixed.inset-0.z-50
@@ -26,7 +26,7 @@
       .flex.items-center.justify-between
         %a{ href: "#", class: "-m-1.5 p-1.5" }
           %span.sr-only NexDue
-          %img.h-8.w-auto{ src: "https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600", alt: "" }
+          %img.h-8.w-auto.rounded-full{ src: image_path('nextdue_leaf_icon_64x64.png'), alt: "NexDue Icon" }
         %button{ type: "button", class: "-m-2.5 rounded-md p-2.5 text-gray-700" }
           %span.sr-only Close menu
           %svg.h-6.w-6{ fill: "none", viewBox: "0 0 24 24", strokeWidth: "1.5", stroke: "currentColor", aria: { hidden: "true" } }
@@ -34,9 +34,12 @@
       .mt-6.flow-root
         %div{ class: "-my-6 divide-y divide-gray-500/10" }
           .space-y-2.py-6
-            %a{ href: "#", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Product
-            %a{ href: "#", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Features
-            %a{ href: "#", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Marketplace
-            %a{ href: "#", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Company
+            - if user_signed_in?
+              %a{ href: "/lists", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Dues
+            - if request.path != "/"
+              %a{ href: "/", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Home
+            %a{ href: "#features", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Features
+            %a{ href: "#analytics", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Analytics
+            %a{ href: "#about", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } About
           .py-6
-            %a{ href: "#", class: "-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Log in
+            = render "layouts/user_log", mobile: true
