@@ -1,4 +1,4 @@
-= form_for @list do |f|
+= form_for @list, data: { controller: "effective-date" } do |f|
   - if @list.errors.any?
     #error_explanation
       %h2= "#{pluralize(@list.errors.count, "error")} prohibited this list from being saved:"
@@ -24,11 +24,11 @@
 
   .field
     = f.label :effective_start_date
-    = f.date_field :effective_start_date, value: @list.effective_start_date || Date.today
+    = f.date_field :effective_start_date, value: @list.effective_start_date || Date.today, data: { target: "effective-date.startDate", action: "change->effective-date#updateStartDate" }
 
   .field
     = f.label :effective_end_date
-    = f.date_field :effective_end_date, value: @list.effective_end_date
+    = f.date_field :effective_end_date, value: @list.effective_end_date, data: { target: "effective-date.endDate" }
 
   .actions
     = f.submit 'Save'
