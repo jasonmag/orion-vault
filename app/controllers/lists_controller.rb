@@ -23,6 +23,7 @@ class ListsController < ApplicationController
   # POST /lists or /lists.json
   def create
     @list = List.new(list_params)
+    @list.user_id = current_user.id
 
     respond_to do |format|
       if @list.save
@@ -66,6 +67,6 @@ class ListsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def list_params
-      params.require(:list).permit(:name, :price, :description, :due_date, :user_id, :effective_start_date, :effective_end_date)
+      params.require(:list).permit(:name, :price, :description, :due_date, :effective_start_date, :effective_end_date)
     end
 end
