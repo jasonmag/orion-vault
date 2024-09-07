@@ -1,7 +1,7 @@
 %form{ action: "#", method: "post" }
   %ul
     - @lists.each do |list|
-      %li.flex.items-center.justify-between.mb-2
+      %li.flex.items-center.justify-between.mb-2{ "data-check-target" => "listItem" }
         .flex.items-center{ "data-controller" => "check" }
           %span{ "data-action" => "click->check#toggle", "data-check-target" => "icon", "data-checked" => "false" }
             %svg{ xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-gray-400", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }
@@ -11,4 +11,4 @@
               %span.text-gray-900.font-medium= number_to_currency(list.price)
               %span.text-gray-700= "for"
               %span.font-medium.text-gray-900= "#{truncate(list.name, length: 20)}"
-        %span.text-gray-700.text-right= list.due_date.strftime('%b %d')
+        %span.text-gray-700.text-right{ "data-due-date" => list.due_date }= list.due_date.strftime('%b %d')
