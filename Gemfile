@@ -43,6 +43,8 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem "rspec-rails", "~> 7.0"
 end
 
 group :development do
@@ -63,3 +65,5 @@ gem "tailwindcss-rails", "~> 2.7"
 gem "haml-rails", "~> 2.1"
 
 gem "html2haml", "~> 2.3"
+
+
