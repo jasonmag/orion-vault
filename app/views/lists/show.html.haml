@@ -22,9 +22,31 @@
         %p
           %b Effective End date:
           = @list.effective_end_date
-        %p
-          %b User:
-          = @list.user.email
+        - if @list.payment_schedule
+          %h2 Payment Schedule Details
+
+          %p
+            %strong Frequency:
+            = @list.payment_schedule.frequency
+
+          %p
+            %strong Day of Month:
+            = @list.payment_schedule.day_of_month || "N/A"
+
+          %p
+            %strong Day of Week:
+            = @list.payment_schedule.day_of_week || "N/A"
+
+          %p
+            %strong Month of Year:
+            = @list.payment_schedule.month_of_year || "N/A"
+
+          %p
+            %strong Notification Lead Time (days before due):
+            = @list.payment_schedule.notification_lead_time
+
+        - else
+          %p No payment schedule is associated with this list item.
 
         = link_to 'Edit', edit_list_path(@list)
         \|

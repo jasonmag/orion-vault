@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_07_080124) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_07_132158) do
   create_table "admins", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -36,6 +36,18 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_07_080124) do
     t.index ["user_id"], name: "index_lists_on_user_id"
   end
 
+  create_table "payment_schedules", force: :cascade do |t|
+    t.integer "list_id", null: false
+    t.string "frequency"
+    t.integer "day_of_month"
+    t.integer "day_of_week"
+    t.integer "month_of_year"
+    t.integer "notification_lead_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["list_id"], name: "index_payment_schedules_on_list_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -49,4 +61,5 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_07_080124) do
   end
 
   add_foreign_key "lists", "users"
+  add_foreign_key "payment_schedules", "lists"
 end

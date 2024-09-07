@@ -12,7 +12,7 @@
 
   .field
     = f.label :price
-    = f.text_field :price
+    = f.number_field :price, step: "0.01"
 
   .field
     = f.label :description
@@ -30,5 +30,27 @@
     = f.label :effective_end_date
     = f.date_field :effective_end_date, value: @list.effective_end_date, data: { target: "effective-date.endDate" }
 
+  .payment_schedule_fields
+    = f.fields_for :payment_schedule do |ps|
+      .field
+        = ps.label :frequency
+        = ps.select :frequency, ['monthly', 'weekly', 'bi-weekly', 'yearly'], prompt: "Select Frequency"
+
+      .field
+        = ps.label :day_of_month
+        = ps.number_field :day_of_month
+
+      .field
+        = ps.label :day_of_week
+        = ps.number_field :day_of_week
+
+      .field
+        = ps.label :month_of_year
+        = ps.number_field :month_of_year
+
+      .field
+        = ps.label :notification_lead_time
+        = ps.number_field :notification_lead_time
+
   .actions
-    = f.submit 'Save'
+    = f.submit "Save"

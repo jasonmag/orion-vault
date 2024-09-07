@@ -14,10 +14,12 @@ class ListsController < ApplicationController
   # GET /lists/new
   def new
     @list = List.new
+    @list.build_payment_schedule # Initialize payment schedule for the form
   end
 
   # GET /lists/1/edit
   def edit
+    @list.build_payment_schedule if @list.payment_schedule.nil? # Ensure a payment schedule exists for the form
   end
 
   # POST /lists or /lists.json
@@ -67,6 +69,8 @@ class ListsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def list_params
-      params.require(:list).permit(:name, :price, :description, :due_date, :effective_start_date, :effective_end_date)
+      params.require(:list)
+        .permit(:name, :price, :description, :due_date, :effective_start_date, :effective_end_date,
+              payment_schedule_attributes: [ :frequency, :day_of_month, :day_of_week, :month_of_year, :notification_lead_time ])
     end
 end

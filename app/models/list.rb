@@ -1,5 +1,7 @@
 class List < ApplicationRecord
   belongs_to :user
+  has_one :payment_schedule, dependent: :destroy
+  accepts_nested_attributes_for :payment_schedule
 
   include OrderableByDate
   include EffectiveDateable
