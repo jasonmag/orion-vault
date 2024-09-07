@@ -4,7 +4,7 @@ class ListsController < ApplicationController
 
   # GET /lists or /lists.json
   def index
-    @lists = current_user.list.all
+    @lists = current_user.list.all.ordered_by_date
   end
 
   # GET /lists/1 or /lists/1.json
@@ -61,7 +61,6 @@ class ListsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_list
-      # @list = List.find(params[:id])
       @list = current_user.list.find(params[:id])
     end
 
