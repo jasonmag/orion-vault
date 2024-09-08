@@ -37,11 +37,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_08_171009) do
 
   create_table "payment_schedules", force: :cascade do |t|
     t.integer "list_id", null: false
-    t.string "frequency"
+    t.string "frequency", null: false
     t.integer "day_of_month"
     t.integer "day_of_week"
     t.integer "month_of_year"
-    t.integer "notification_lead_time"
+    t.integer "notification_lead_time", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["list_id"], name: "index_payment_schedules_on_list_id"
