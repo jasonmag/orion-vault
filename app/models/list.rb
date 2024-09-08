@@ -5,10 +5,11 @@ class List < ApplicationRecord
 
   include OrderableByDate
   include EffectiveDateable
+  include DueDateable
 
-  # specify the column orderBy
-  orderable_by_date :due_date
-
+  # Specify the column to order by using the next_due_date method
+  orderable_by_date :next_due_date
+  
   # Set default effective_start_date to today if not provided
   before_validation :set_default_effective_start_date
 

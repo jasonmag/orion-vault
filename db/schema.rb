@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_07_132158) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_08_171009) do
   create_table "admins", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -27,7 +27,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_07_132158) do
     t.string "name"
     t.decimal "price", precision: 8, scale: 2
     t.text "description"
-    t.date "due_date"
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -38,11 +37,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_07_132158) do
 
   create_table "payment_schedules", force: :cascade do |t|
     t.integer "list_id", null: false
-    t.string "frequency", null: false
+    t.string "frequency"
     t.integer "day_of_month"
     t.integer "day_of_week"
     t.integer "month_of_year"
-    t.integer "notification_lead_time", null: false
+    t.integer "notification_lead_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["list_id"], name: "index_payment_schedules_on_list_id"
