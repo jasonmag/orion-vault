@@ -11,7 +11,7 @@
               %span.text-gray-900.font-medium= number_to_currency(list.price)
               %span.text-gray-700= " for "
               %span.font-medium.text-gray-900= truncate(list.name, length: 15)
-        %span.text-gray-700.text-right{ "data-due-date" => list.next_due_date }
+        %span.text-gray-700.text-right{ "data-due-date" => list.next_due_date.to_s }
           - if list.next_due_date.present?
             = list.next_due_date.strftime('%b %d')
           - else
