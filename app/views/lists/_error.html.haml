@@ -1,0 +1,5 @@
+#error_explanation
+    %h2.text-red-500 "#{pluralize(@list.errors.count, 'error')} prohibited this list from being saved:"
+    %ul
+    - @list.errors.full_messages.each do |message|
+        %li.text-red-500 = message
