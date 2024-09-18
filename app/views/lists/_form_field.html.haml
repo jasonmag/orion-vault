@@ -1,11 +1,15 @@
 
 %div{"data-controller" => "effective-date" }
   .field.mb-4
-    %label.block.text-gray-700.font-bold.mb-2{ for: "list_name" } Name
+    %label.block.text-gray-700.font-bold.mb-2{ for: "list_name" } 
+      Name
+      %span.text-red-500 *
     %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "text", name: "list[name]", id: "list_name", value: @list.name }
 
   .field.mb-4
-    %label.block.text-gray-700.font-bold.mb-2{ for: "list_price" } Price
+    %label.block.text-gray-700.font-bold.mb-2{ for: "list_price" } 
+      Price
+      %span.text-red-500 *
     %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "list[price]", id: "list_price", step: "0.01", value: @list.price }
 
   .field.mb-4
@@ -13,7 +17,9 @@
     %textarea.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ name: "list[description]", id: "list_description" }= @list.description
 
   .field.mb-4
-    %label.block.text-gray-700.font-bold.mb-2{ for: "list_effective_start_date" } Effective Start Date
+    %label.block.text-gray-700.font-bold.mb-2{ for: "list_effective_start_date" } 
+      Effective Start Date
+      %span.text-red-500 *
     %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "date", name: "list[effective_start_date]", id: "list_effective_start_date", value: @list.effective_start_date || Date.today, data: { effective_date_target: "startDate", action: "change->effective-date#updateStartDate" } }
 
   .field.mb-4
@@ -25,7 +31,9 @@
     %fieldset
       %legend Payment Schedule
       %div.field.mb-4
-        %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_frequency" } Frequency
+        %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_frequency" } 
+          Frequency
+          %span.text-red-500 *
         %select.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ name: "list[payment_schedule_attributes][frequency]", id: "payment_schedule_frequency", data: { action: "change->effective-date#setFrequency" } }
           %option{ value: "", seleted: true } Select Frequency
           %option{ value: "monthly" } Monthly
@@ -35,17 +43,25 @@
           %option{ value: "once" } Once
 
       .field.mb-4{ style: "display:none;", data: { effective_date_target: "dayOfMonthField" } }
-        %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_day_of_month" } Day of Month
+        %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_day_of_month" } 
+          Day of Month
+          %span.text-red-500 *
         %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "list[payment_schedule_attributes][day_of_month]", id: "payment_schedule_day_of_month" }
 
       .field.mb-4{ style: "display:none;", data: { effective_date_target: "dayOfWeekField" } }
-        %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_day_of_week" } Day of Week
+        %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_day_of_week" } 
+          Day of Week
+          %span.text-red-500 *
         %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "list[payment_schedule_attributes][day_of_week]", id: "payment_schedule_day_of_week" }
 
       .field.mb-4{ style: "display:none;", data: { effective_date_target: "monthOfYearField" } }
-        %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_month_of_year" } Month of Year
+        %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_month_of_year" } 
+          Month of Year
+          %span.text-red-500 *
         %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "list[payment_schedule_attributes][month_of_year]", id: "payment_schedule_month_of_year" }
 
       .field.mb-4
-        %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_notification_lead_time" } Notify days before due
+        %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_notification_lead_time" } 
+          Notify days before due
+          %span.text-red-500 *
         %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "list[payment_schedule_attributes][notification_lead_time]", id: "payment_schedule_notification_lead_time" }
