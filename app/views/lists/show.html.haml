@@ -1,53 +1,64 @@
-%body.bg-background
-  .bg-background
+%body.bg-gray-100
+  .bg-gray-100
     .relative.isolate.px-6.pt-14.lg:px-8.mx-auto
       .mx-auto.max-w-2xl.py-32.sm:py-48.lg:py-56
-        %p#notice= notice
+        %h1.text-3xl.font-bold.text-center.mb-8 Payment List Item Details
 
-        %p
-          %b Name:
-          = @list.name
-        %p
-          %b Price:
-          = @list.price
-        %p
-          %b Description:
-          = @list.description
-        %p
-          %b Next Due date:
-          = @list.next_due_date
-        %p
-          %b Effective Start date:
-          = @list.effective_start_date
-        %p
-          %b Effective End date:
-          = @list.effective_end_date
+        %p#notice.text-green-500.font-semibold.mt-4= notice
+
+        .mb-8
+          %p.text-sm.mb-4
+            %b Name:
+            = @list.name
+          %p.text-sm.mb-4
+            %b Price:
+            = number_to_currency(@list.price)
+          %p.text-sm.mb-4
+            %b Description:
+            = @list.description
+          %p.text-sm.mb-4
+            %b Next Due date:
+            - if @list.next_due_date.present?
+              = @list.next_due_date.strftime("%B %d, %Y")
+          %p.text-sm.mb-4
+            %b Effective Start date:
+            = @list.effective_start_date.strftime("%B %d, %Y")
+
+          - if @list.effective_end_date.present?
+            %p.text-sm.mb-4
+              %b Effective End date:
+              = @list.effective_end_date.strftime("%B %d, %Y")
+
         - if @list.payment_schedule
-          %h2 Payment Schedule Details
+          %h2.text-sm.text-center.font-semibold.mb-8 Payment Schedule Details
 
-          %p
+          %p.text-sm.mb-2
             %strong Frequency:
-            = @list.payment_schedule.frequency
+            = @list.payment_schedule.human_readable_frequency
 
-          %p
-            %strong Day of Month:
-            = @list.payment_schedule.day_of_month || "N/A"
+          - if @list.payment_schedule.monthly?
+            %p.text-sm.mb-2
+              %strong Day of Month:
+              = @list.payment_schedule.day_of_month || "N/A"
 
-          %p
-            %strong Day of Week:
-            = @list.payment_schedule.day_of_week || "N/A"
+          - if @list.payment_schedule.weekly? || @list.payment_schedule.biweekly?
+            %p.text-sm.mb-2
+              %strong Day of Week:
+              = @list.payment_schedule.day_of_week || "N/A"
 
-          %p
-            %strong Month of Year:
-            = @list.payment_schedule.month_of_year || "N/A"
+          - if @list.payment_schedule.yearly?
+            %p.text-sm.mb-2
+              %strong Month of Year:
+              = @list.payment_schedule.month_of_year || "N/A"
 
-          %p
+          %p.text-sm.mb-4
             %strong Notification Lead Time (days before due):
             = @list.payment_schedule.notification_lead_time
 
         - else
-          %p No payment schedule is associated with this list item.
+          %p.text-sm.mb-2.text-red-500 No payment schedule is associated with this list item.
 
-        = link_to 'Edit', edit_list_path(@list)
-        \|
-        = link_to 'Back', lists_path
+        .mt-8
+          = link_to 'Edit', edit_list_path(@list), class: 'text-blue-500 hover:text-blue-700 font-semibold'
+          \|
+          = link_to 'Back', lists_path, class: 'text-blue-500 hover:text-blue-700 font-semibold'

@@ -34,34 +34,31 @@
         %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_frequency" } 
           Frequency
           %span.text-red-500 *
-        %select.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ name: "list[payment_schedule_attributes][frequency]", id: "payment_schedule_frequency", data: { action: "change->effective-date#setFrequency" } }
-          %option{ value: "", seleted: true } Select Frequency
-          %option{ value: "monthly" } Monthly
-          %option{ value: "weekly" } Weekly
-          %option{ value: "bi-weekly" } Bi-weekly
-          %option{ value: "yearly" } Yearly
-          %option{ value: "once" } Once
+      %select.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ name: "list[payment_schedule_attributes][frequency]", id: "payment_schedule_frequency", data: { action: "change->effective-date#setFrequency" } }
+        %option{ value: "", selected: @list.payment_schedule.frequency.blank? } Select Frequency
+        - PaymentSchedule::FREQUENCIES.each do |frequency|
+          %option{ value: frequency, selected: @list.payment_schedule.frequency == frequency }= PaymentSchedule::FREQUENCIES.find { |f| f == frequency }.capitalize.gsub('_', ' ')
 
       .field.mb-4{ style: "display:none;", data: { effective_date_target: "dayOfMonthField" } }
         %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_day_of_month" } 
           Day of Month
           %span.text-red-500 *
-        %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "list[payment_schedule_attributes][day_of_month]", id: "payment_schedule_day_of_month" }
+        %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "list[payment_schedule_attributes][day_of_month]", id: "payment_schedule_day_of_month", value: @list.payment_schedule.day_of_month }
 
       .field.mb-4{ style: "display:none;", data: { effective_date_target: "dayOfWeekField" } }
         %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_day_of_week" } 
           Day of Week
           %span.text-red-500 *
-        %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "list[payment_schedule_attributes][day_of_week]", id: "payment_schedule_day_of_week" }
+        %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "list[payment_schedule_attributes][day_of_week]", id: "payment_schedule_day_of_week", value: @list.payment_schedule.day_of_week }
 
       .field.mb-4{ style: "display:none;", data: { effective_date_target: "monthOfYearField" } }
         %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_month_of_year" } 
           Month of Year
           %span.text-red-500 *
-        %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "list[payment_schedule_attributes][month_of_year]", id: "payment_schedule_month_of_year" }
+        %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "list[payment_schedule_attributes][month_of_year]", id: "payment_schedule_month_of_year", value: @list.payment_schedule.month_of_year }
 
       .field.mb-4
         %label.block.text-gray-700.font-bold.mb-2{ for: "payment_schedule_notification_lead_time" } 
           Notify days before due
           %span.text-red-500 *
-        %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "list[payment_schedule_attributes][notification_lead_time]", id: "payment_schedule_notification_lead_time" }
+        %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "list[payment_schedule_attributes][notification_lead_time]", id: "payment_schedule_notification_lead_time", value: @list.payment_schedule.notification_lead_time }

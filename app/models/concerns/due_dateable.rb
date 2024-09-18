@@ -6,15 +6,15 @@ module DueDateable
       return nil unless payment_schedule
 
       case payment_schedule.frequency
-      when "monthly"
+      when PaymentSchedule::FREQUENCY_MONTHLY
         calculate_monthly_due_date
-      when "weekly"
+      when PaymentSchedule::FREQUENCY_WEEKLY
         calculate_weekly_due_date
-      when "bi-weekly"
+      when PaymentSchedule::FREQUENCY_BI_WEEKLY
         calculate_bi_weekly_due_date
-      when "yearly"
+      when PaymentSchedule::FREQUENCY_YEARLY
         calculate_yearly_due_date
-      when "once"
+      when PaymentSchedule::FREQUENCY_ONCE
         calculate_once_due_date
       else
         nil
