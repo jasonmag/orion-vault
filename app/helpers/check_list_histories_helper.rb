@@ -1,0 +1,2 @@
+module CheckListHistoriesHelper
+end

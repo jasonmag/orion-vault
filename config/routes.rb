@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :lists
   devise_for :admins, controllers: {
     sessions: "admins/sessions",
     registrations: "admins/registrations"
@@ -21,4 +20,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
   root "pages#home"
+
+  resources :lists do
+    resources :check_list_histories, only: [:create]
+  end
 end

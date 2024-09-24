@@ -8,6 +8,9 @@ export default class extends Controller {
     const icon = this.iconTarget
     const listItem = event.currentTarget.closest("li")
     const parentUl = listItem.parentNode
+    const listId = listItem.dataset.listId
+    const dueDate = listItem.querySelector("[data-due-date]").dataset.dueDate
+    const isChecked = icon.dataset.checked === "true"
 
     // Toggle check/uncheck
     if (icon.dataset.checked === "true") {
@@ -19,6 +22,19 @@ export default class extends Controller {
       icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>'
       icon.dataset.checked = "true"
     }
+
+    // Record the check/uncheck action in the database
+    fetch(`/lists/${listId}/check_list_histories`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({
+        checked: icon.dataset.checked === "true",
+        due_date: dueDate
+      })
+    })
 
     // Reorder the list by checked/unchecked and due_date
     this.sortByCheckedAndDueDate(parentUl)
