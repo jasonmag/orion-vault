@@ -4,15 +4,22 @@ class CheckListHistoriesController < ApplicationController
   def create
     list = List.find(params[:list_id])
 
-    # Create a check history record
-    CheckListHistory.create!(
+    # Find an existing record for the user, list, and due_date, or initialize a new one
+    check_list_history = CheckListHistory.find_or_initialize_by(
       user: current_user,
       list: list,
-      checked_at: DateTime.now,
-      checked: params[:checked],
       due_date: params[:due_date]
     )
 
-    head :ok
+    # Update the checked status and checked_at timestamp
+    check_list_history.checked = params[:checked]
+    check_list_history.checked_at = DateTime.now if check_list_history.checked
+
+    # Save the record (either create a new one or update the existing one)
+    if check_list_history.save
+      head :ok
+    else
+      render json: { errors: check_list_history.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 end
