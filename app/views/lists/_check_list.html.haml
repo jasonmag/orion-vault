@@ -1,11 +1,16 @@
 %form{ action: "#", method: "post" }
   %ul
     - @lists.each do |list|
+      - checked = list.checked_status_for(current_user) # Get the checked status for the current user
       %li.flex.items-center.justify-between.mb-4{ "data-check-target" => "listItem", "data-list-id" => list.id }
         .flex.items-center{ "data-controller" => "check" }
-          %span{ "data-action" => "click->check#toggle", "data-check-target" => "icon", "data-checked" => "false" }
-            %svg{ xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-gray-400", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }
-              %path{ "stroke-linecap" => "round", "stroke-linejoin" => "round", "stroke-width" => "2", "d" => "M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" }
+          %span{ "data-action" => "click->check#toggle", "data-check-target" => "icon", "data-checked" => checked }
+            - if checked
+              %svg{ xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-green-400", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }
+                %path{ "stroke-linecap" => "round", "stroke-linejoin" => "round", "stroke-width" => "2", "d" => "M5 13l4 4L19 7" } # Checked icon (checkmark)
+            - else
+              %svg{ xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-gray-400", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }
+                %path{ "stroke-linecap" => "round", "stroke-linejoin" => "round", "stroke-width" => "2", "d" => "M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" } # Unchecked icon (plus sign)
           %label.ml-2{ for: "list_#{list.id}" }
             = link_to list_path(list), class: 'block' do
               %span.text-gray-900.font-medium= number_to_currency(list.price)
