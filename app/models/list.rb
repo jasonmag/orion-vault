@@ -20,6 +20,7 @@ class List < ApplicationRecord
       list_id: self.id,
       due_date: self.next_due_date
     )
+    puts check_list_history&.checked
     check_list_history&.checked # Return the checked value or nil if not found
   end
 
