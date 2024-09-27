@@ -1,7 +1,7 @@
 %form{ action: "#", method: "post" }
   %ul
     - @lists.each do |list|
-      - checked = list.checked_status_for(current_user) # Get the checked status for the current user
+      - checked = list.checked_status_for(current_user).to_s # Get the checked status for the current user in strings
       %li.flex.items-center.justify-between.mb-4{ "data-check-target" => "listItem", "data-list-id" => list.id }
         .flex.items-center{ "data-controller" => "check" }
           %span{ "data-action" => "click->check#toggle", "data-check-target" => "icon", "data-checked" => checked }
