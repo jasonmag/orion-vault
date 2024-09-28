@@ -36,23 +36,23 @@
             %strong Frequency:
             = @list.payment_schedule.human_readable_frequency
 
-          - if @list.payment_schedule.monthly?
+          - if @list.payment_schedule.monthly? || @list.payment_schedule.yearly?
             %p.text-sm.mb-4
               %strong Day of Month:
-              = @list.payment_schedule.day_of_month || "N/A"
+              = @list.payment_schedule.day_of_month&.ordinalize || "N/A"
 
           - if @list.payment_schedule.weekly? || @list.payment_schedule.biweekly?
             %p.text-sm.mb-4
               %strong Day of Week:
-              = @list.payment_schedule.day_of_week || "N/A"
+              = @list.payment_schedule.day_of_week&.ordinalize || "N/A"
 
           - if @list.payment_schedule.yearly?
             %p.text-sm.mb-4
               %strong Month of Year:
-              = @list.payment_schedule.month_of_year || "N/A"
+              = @list.payment_schedule.month_of_year&.ordinalize || "N/A"
 
           %p.text-sm.mb-4
-            %strong Notification Lead Time (days before due):
+            %strong Notify days before due:
             = @list.payment_schedule.notification_lead_time
 
         - else
