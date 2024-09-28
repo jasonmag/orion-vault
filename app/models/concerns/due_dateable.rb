@@ -24,9 +24,11 @@ module DueDateable
     private
 
     def calculate_monthly_due_date
+      start_date = effective_start_date || Date.today
       day_of_month = payment_schedule.day_of_month || 1
-      due_date = Date.today.beginning_of_month + (day_of_month - 1).days
-      due_date >= Date.today ? due_date : due_date.next_month
+      next_month = start_date.next_month
+      next_due = Date.new(next_month.year, next_month.month, [ day_of_month, Date.civil(next_month.year, next_month.month, -1).day ].min)
+      next_due
     end
 
     def calculate_weekly_due_date
@@ -34,6 +36,7 @@ module DueDateable
       day_of_week = payment_schedule.day_of_week || 0
       week_number = start_date.strftime("%U").to_i
       due_week = week_number + 2
+      # Date.commercial uses ISO week (Monday = 1, Sunday = 7)
       next_due = Date.commercial(start_date.year, due_week, day_of_week)
       next_due
     end
