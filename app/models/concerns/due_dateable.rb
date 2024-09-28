@@ -36,11 +36,15 @@ module DueDateable
       due_date >= today ? due_date : due_date + 1.week
     end
 
+    # Due date every 2 weeks
     def calculate_bi_weekly_due_date
       start_date = effective_start_date || Date.today
-      days_since_start = (Date.today - start_date).to_i
-      weeks_passed = days_since_start / 7
-      next_due = start_date + (weeks_passed + 1).weeks * 2
+      day_of_week = payment_schedule.day_of_week || 5
+      week_number = start_date.strftime("%U").to_i
+      p "week_number - #{week_number}"
+      due_week = week_number + 3
+      # Date.commercial uses ISO week (Monday = 1, Sunday = 7)
+      next_due = Date.commercial(start_date.year, due_week, day_of_week)
       next_due
     end
 
