@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   root "pages#home"
 
   resources :lists do
+    get "select_dates", on: :collection
     resources :check_list_histories, only: [:create]
   end
 end

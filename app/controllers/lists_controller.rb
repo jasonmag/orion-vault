@@ -2,15 +2,15 @@ class ListsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_list, only: %i[ show edit update destroy ]
 
+  include DateSelectable
+
   # GET /lists or /lists.json
   def index
-    # TODO convert into user date range
-    today = Date.today
-    start_date = today - 15.days
-    end_date = today + 15.days
+    @start_date = params[:start_date].present? ? Date.parse(params[:start_date]) : Date.today - 15.days
+    @end_date = params[:end_date].present? ? Date.parse(params[:end_date]) : Date.today + 15.days
 
-    @lists_with_due_dates = current_user.list.visible_or_once(start_date, end_date).flat_map do |list|
-      due_dates = list.due_dates_within_range(start_date, end_date)
+    @lists_with_due_dates = current_user.list.visible_or_once(@start_date, @end_date).flat_map do |list|
+      due_dates = list.due_dates_within_range(@start_date, @end_date)
       due_dates.map { |due_date| { list: list, due_date: due_date } }
     end
 
@@ -69,6 +69,9 @@ class ListsController < ApplicationController
       format.html { redirect_to lists_url, notice: "List was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def select_dates
   end
 
   private
