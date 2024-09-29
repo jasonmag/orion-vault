@@ -1,7 +1,9 @@
 %form{ action: "#", method: "post" }
   %ul
-    - @lists.each do |list|
-      - checked = list.checked_status_for(current_user).to_s # Get the checked status for the current user in strings
+    - @lists_with_due_dates.each do |entry|
+      - list = entry[:list]
+      - due_date = entry[:due_date]
+      - checked = list.checked_status_for(current_user, due_date).to_s # Get the checked status for the current user in strings
       %li.flex.items-center.justify-between.mb-4{ "data-check-target" => "listItem", "data-list-id" => list.id }
         .flex.items-center{ "data-controller" => "check" }
           %span{ "data-action" => "click->check#toggle", "data-check-target" => "icon", "data-checked" => checked }
@@ -16,8 +18,8 @@
               %span.text-gray-900.font-medium= number_to_currency(list.price)
               %span.text-gray-700= " for "
               %span.font-medium.text-gray-900= truncate(list.name, length: 15)
-        %span.text-gray-700.text-right{ "data-due-date" => list.next_due_date.to_s }
-          - if list.next_due_date.present?
-            = list.next_due_date.strftime('%b %d')
+        %span.text-gray-700.text-right{ "data-due-date" => due_date.to_s }
+          - if due_date.present?
+            = due_date.strftime('%b %d')
           - else
             = "No due date"

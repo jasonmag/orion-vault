@@ -47,7 +47,7 @@ export default class extends Controller {
     })
 
     // Reorder the list by checked/unchecked and due_date
-    this.sortByCheckedAndDueDate(parentUl)
+    // this.sortByCheckedAndDueDate(parentUl)
   }
 
   setCheckedIcon(icon) {

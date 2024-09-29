@@ -16,10 +16,10 @@
           %p.text-sm.mb-4
             %b Description:
             = @list.description
-          %p.text-sm.mb-4
-            %b Next Due date:
-            - if @list.next_due_date.present?
-              = @list.next_due_date.strftime("%B %d, %Y")
+          -# %p.text-sm.mb-4
+          -#   %b Next Due date:
+          -#   - if @list.next_due_date.present?
+          -#     = @list.next_due_date.strftime("%B %d, %Y")
           %p.text-sm.mb-4
             %b Effective Start date:
             = @list.effective_start_date.strftime("%B %d, %Y")

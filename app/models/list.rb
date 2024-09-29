@@ -14,11 +14,11 @@ class List < ApplicationRecord
   # Set default effective_start_date to today if not provided
   before_validation :set_default_effective_start_date
 
-  def checked_status_for(user)
+  def checked_status_for(user, due_date)
     check_list_history = CheckListHistory.find_by(
       user_id: user.id,
       list_id: self.id,
-      due_date: self.next_due_date
+      due_date: due_date
     )
     puts check_list_history&.checked
     check_list_history&.checked # Return the checked value or nil if not found

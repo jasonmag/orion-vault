@@ -4,7 +4,16 @@ class ListsController < ApplicationController
 
   # GET /lists or /lists.json
   def index
-    @lists = current_user.list.visible.all.ordered_by_date
+    today = Date.today
+    start_date = today - 15.days
+    end_date = today + 15.days
+
+    @lists_with_due_dates = current_user.list.visible.flat_map do |list|
+      due_dates = list.due_dates_within_range(start_date, end_date)
+      due_dates.map { |due_date| { list: list, due_date: due_date } }
+    end
+
+    @lists_with_due_dates.sort_by! { |entry| entry[:due_date] }
   end
 
   # GET /lists/1 or /lists/1.json
