@@ -57,7 +57,7 @@ class PaymentSchedule < ApplicationRecord
     when FREQUENCY_YEARLY
       FREQUENCY_YEARLY.capitalize
     when FREQUENCY_ONCE
-      FREQUENCY_YEARLY.capitalize
+      FREQUENCY_ONCE.capitalize
     else
       "Unknown frequency"
     end
