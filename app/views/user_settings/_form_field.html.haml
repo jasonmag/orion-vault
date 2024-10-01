@@ -8,8 +8,10 @@
   .field.mb-4
     %label.block.text-gray-700.font-bold.mb-2{ for: "user_setting_default_currency" } 
       Default Currency
-      %span.text-red-500 *
-    %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "text", name: "user_setting[default_currency]", id: "user_setting_default_currency", value: @user_setting.default_currency }
+    %select.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ name: "user_setting[default_currency]", id: "user_setting_default_currency" }
+      - Money::Currency.table.each_value do |currency|
+        %option{ value: currency[:iso_code], selected: @user_setting.default_currency == currency[:iso_code] }
+          = "#{currency[:iso_code]} (#{currency[:symbol]})"
 
   .field.mb-4
     %label.block.text-gray-700.font-bold.mb-2{ for: "user_setting_notification_lead_time" } 
