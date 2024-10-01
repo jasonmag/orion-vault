@@ -12,7 +12,7 @@
             = @list.name
           %p.text-sm.mb-4
             %b Price:
-            = number_to_currency(@list.price)
+            = Money.new(@list.price * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)          
           %p.text-sm.mb-4
             %b Description:
             = @list.description

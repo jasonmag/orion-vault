@@ -15,7 +15,7 @@
                 %path{ "stroke-linecap" => "round", "stroke-linejoin" => "round", "stroke-width" => "2", "d" => "M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" } # Unchecked icon (plus sign)
           %label.ml-2{ for: "list_#{list.id}" }
             = link_to list_path(list), class: 'block' do
-              %span.text-gray-900.font-medium= number_to_currency(list.price)
+              %span.text-gray-900.font-medium= Money.new(list.price * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
               %span.text-gray-700= " for "
               %span.font-medium.text-gray-900= truncate(list.name, length: 15)
         %span.text-gray-700.text-right{ "data-due-date" => due_date.to_s }

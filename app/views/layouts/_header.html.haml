@@ -14,11 +14,11 @@
     .hidden.lg:flex.lg:gap-x-12
       - if user_signed_in?
         %a{ href: "/lists", class: "text-sm font-semibold leading-6 text-gray-900" } Dues
+        %a{ href: "/user_settings", class: "text-sm font-semibold leading-6 text-gray-900" } Settings
       -# - if request.path != "/"
         -# %a{ href: "/", class: "text-sm font-semibold leading-6 text-gray-900" } Home
       -# %a{ href: "#features", class: "text-sm font-semibold leading-6 text-gray-900" } Features
       -# %a{ href: "#analytics", class: "text-sm font-semibold leading-6 text-gray-900" } Analytics
-      %a{ href: "/user_settings", class: "text-sm font-semibold leading-6 text-gray-900" } Settings
       %a{ href: "#about", class: "text-sm font-semibold leading-6 text-gray-900" } About
 
     = render "layouts/user_log", mobile: false
@@ -40,11 +40,11 @@
           .space-y-2.py-6
             - if user_signed_in?
               %a{ href: "/lists", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Dues
+              %a{ href: "/user_settings", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Settings
             -# - if request.path != "/"
               -# %a{ href: "/", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Home
             -# %a{ href: "#features", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Features
             -# %a{ href: "#analytics", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Analytics
-            %a{ href: "/user_settings", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Settings
             %a{ href: "#about", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } About
           .py-6
             = render "layouts/user_log", mobile: true
