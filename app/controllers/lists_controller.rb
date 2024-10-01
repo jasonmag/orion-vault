@@ -6,9 +6,6 @@ class ListsController < ApplicationController
 
   # GET /lists or /lists.json
   def index
-    @start_date = params[:start_date].present? ? Date.parse(params[:start_date]) : Date.today - 15.days
-    @end_date = params[:end_date].present? ? Date.parse(params[:end_date]) : Date.today + 15.days
-
     @lists_with_due_dates = current_user.list.visible_or_once(@start_date, @end_date).flat_map do |list|
       due_dates = list.due_dates_within_range(@start_date, @end_date)
       due_dates.map { |due_date| { list: list, due_date: due_date } }
