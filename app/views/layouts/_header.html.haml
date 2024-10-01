@@ -14,7 +14,7 @@
     .hidden.lg:flex.lg:gap-x-12
       - if user_signed_in?
         %a{ href: "/lists", class: "text-sm font-semibold leading-6 text-gray-900" } Dues
-      - if request.path != "/"
+      -# - if request.path != "/"
         -# %a{ href: "/", class: "text-sm font-semibold leading-6 text-gray-900" } Home
       -# %a{ href: "#features", class: "text-sm font-semibold leading-6 text-gray-900" } Features
       -# %a{ href: "#analytics", class: "text-sm font-semibold leading-6 text-gray-900" } Analytics
