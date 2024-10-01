@@ -1,0 +1,22 @@
+%div{"data-controller" => "user-setting" }
+  .field.mb-4
+    %label.block.text-gray-700.font-bold.mb-2{ for: "user_setting_default_date_range_list_display" } 
+      Default Date Range List Display
+      %span.text-red-500 *
+    %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "text", name: "user_setting[default_date_range_list_display]", id: "user_setting_default_date_range_list_display", value: @user_setting.default_date_range_list_display }
+
+  .field.mb-4
+    %label.block.text-gray-700.font-bold.mb-2{ for: "user_setting_default_currency" } 
+      Default Currency
+      %span.text-red-500 *
+    %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "text", name: "user_setting[default_currency]", id: "user_setting_default_currency", value: @user_setting.default_currency }
+
+  .field.mb-4
+    %label.block.text-gray-700.font-bold.mb-2{ for: "user_setting_notification_lead_time" } 
+      Notify days before due
+      %span.text-red-500 *
+    %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{ type: "number", name: "user_setting[notification_lead_time]", id: "user_setting_notification_lead_time", value: @user_setting.notification_lead_time }
+
+  .field.mb-4
+    %div.flex.justify-center
+      %button.shadow.bg-indigo-600.hover:bg-indigo-700.text-white.font-bold.py-2.px-4.rounded Save Settings

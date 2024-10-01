@@ -23,6 +23,8 @@ Rails.application.routes.draw do
 
   resources :lists do
     get "select_dates", on: :collection
-    resources :check_list_histories, only: [:create]
+    resources :check_list_histories, only: [ :create ]
   end
+
+  resource :user_setting, only: [ :show, :update ], path: "user_settings"
 end
