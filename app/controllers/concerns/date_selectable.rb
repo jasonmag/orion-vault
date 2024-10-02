@@ -3,7 +3,7 @@ module DateSelectable
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_dates, only: :index
+    before_action :set_dates, only: [ :index, :select_dates ]
   end
 
   def select_dates

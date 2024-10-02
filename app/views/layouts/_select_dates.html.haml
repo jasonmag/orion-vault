@@ -4,11 +4,11 @@
 = form_with url: lists_path, method: :get, local: true, data: { controller: "date" } do
   .mb-4
     %label.block.font-medium Start Date:
-    = date_field_tag :start_date, Date.today.beginning_of_month, class: "mt-2 block w-full p-2 border rounded-md", data: { date_target: "startDate", action: "input->date#validateDates" }
+    = date_field_tag :start_date, @start_date, class: "mt-2 block w-full p-2 border rounded-md", data: { date_target: "startDate", action: "input->date#validateDates" }
 
   .mb-4
     %label.block.font-medium End Date:
-    = date_field_tag :end_date, Date.today.end_of_month, class: "mt-2 block w-full p-2 border rounded-md", data: { date_target: "endDate", action: "input->date#validateDates" }
+    = date_field_tag :end_date, @end_date, class: "mt-2 block w-full p-2 border rounded-md", data: { date_target: "endDate", action: "input->date#validateDates" }
 
   .mt-4
     = submit_tag "Submit", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded", data: { date_target: "submitButton" }
