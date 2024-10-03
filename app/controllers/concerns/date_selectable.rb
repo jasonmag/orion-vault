@@ -24,8 +24,13 @@ module DateSelectable
       @end_date = session[:end_date].to_date
     else
       # If no params or session, use the default date range
-      @start_date = Date.today
-      @end_date = Date.today + 15.days
+      user_default_dates
     end
+  end
+
+  def user_default_dates
+    default_dates = current_user.user_setting.default_date_range_list_display.to_i || 5
+    @start_date = Date.today - default_dates
+    @end_date = Date.today + default_dates
   end
 end
