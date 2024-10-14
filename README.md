@@ -29,5 +29,7 @@ Things you may want to cover:
 
 * Deployment instructions
     - Kamal
+    - run `dotenv kamal deploy`
+        - to load .env file, by default Kamal2 won't load env file anymore.
 
 * ...
