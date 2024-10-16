@@ -1,10 +1,10 @@
+<% require "dotenv"; Dotenv.load(".env") %>
 # Name of your application. Used to uniquely configure containers.
 service: nexdue
 
 # Name of the container image.
 image: jasonmaglangit/nexdue
 
-<% require "dotenv"; Dotenv.load(".env") %>
 # Deploy to these servers.
 servers:
   web:
