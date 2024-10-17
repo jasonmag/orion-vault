@@ -8,10 +8,10 @@
         .flex.items-center{ "data-controller" => "check" }
           %span{ "data-action" => "click->check#toggle", "data-check-target" => "icon", "data-checked" => checked }
             - if checked
-              %svg{ xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-green-400", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }
+              %svg{ xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-black", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }
                 %path{ "stroke-linecap" => "round", "stroke-linejoin" => "round", "stroke-width" => "2", "d" => "M5 13l4 4L19 7" } # Checked icon (checkmark)
             - else
-              %svg{ xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-gray-400", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }
+              %svg{ xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-gray-600", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }
                 %path{ "stroke-linecap" => "round", "stroke-linejoin" => "round", "stroke-width" => "2", "d" => "M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" } # Unchecked icon (plus sign)
           %label.ml-2{ for: "list_#{list.id}" }
             = link_to list_path(list), class: 'block' do
