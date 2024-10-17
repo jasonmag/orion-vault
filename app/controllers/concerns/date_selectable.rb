@@ -29,7 +29,7 @@ module DateSelectable
   end
 
   def user_default_dates
-    default_dates = current_user.user_setting.default_date_range_list_display.to_i || 5
+    default_dates = current_user.user_setting&.default_date_range_list_display.to_i || 5
     @start_date = Date.today - default_dates
     @end_date = Date.today + default_dates
   end
