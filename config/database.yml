@@ -30,4 +30,4 @@ test:
 production:
   <<: *default
   # database: path/to/persistent/storage/production.sqlite3
-  database: app/storage/production.sqlite3
+  database: storage/#{Rails.application.config.application_name}_production.sqlite3
