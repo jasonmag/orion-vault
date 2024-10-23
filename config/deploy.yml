@@ -61,7 +61,7 @@ ssh:
 # Use a persistent storage volume.
 #
 volumes:
-  - sqlite_data:/rails/db/sqlite
+  - sqlite_data:/rails/storage
   # - "/app_storage:/app/storage"
 
 # Bridge fingerprinted assets, like JS and CSS, between versions to avoid
