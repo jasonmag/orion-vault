@@ -30,4 +30,4 @@ test:
 production:
   <<: *default
   # database: path/to/persistent/storage/production.sqlite3
-  database: storage/production.sqlite3
+  database: storage/<%= Rails.application.class.module_parent_name.downcase %>_production.sqlite3
