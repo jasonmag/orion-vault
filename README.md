@@ -8,8 +8,8 @@ Things you may want to cover:
     - 3.2.3
 
 * System dependencies
-    - Ruby on Rails v7.2
-    - Device v4.9
+    - Ruby on Rails v8.0.2
+    - Devise v4.9
     - TailwindCss v2.7
 
 * Configuration
