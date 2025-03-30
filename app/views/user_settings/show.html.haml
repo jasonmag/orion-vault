@@ -3,6 +3,19 @@
     .relative.isolate.px-6.pt-14.lg:px-8.mx-auto
       .mx-auto.max-w-2xl.py-32.sm:py-48.lg:py-56
         %h1.text-3xl.font-bold.text-center.mb-8 Settings
-        %form{ action: user_setting_path, method: "post" }
-          %input{ type: "hidden", name: "_method", value: "patch" }
-          = render 'form_field'
+
+        .space-y-4.text-gray-800.text-lg
+          %p
+            %strong Display Days from Current day:
+            = @user_setting.default_date_range_list_display
+
+          %p
+            %strong Default Currency:
+            = @user_setting.default_currency
+
+          %p
+            %strong Notify days before due:
+            = @user_setting.notification_lead_time
+
+        .mt-8.text-center
+          = link_to "Edit Settings", edit_user_setting_path, class: "inline-block px-4 py-2 bg-indigo-600 text-white font-bold rounded hover:bg-indigo-700"

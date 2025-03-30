@@ -11,6 +11,6 @@ class UserSetting < ApplicationRecord
   private
 
   def set_default_currency
-    self.default_currency = "USD"
+    self.default_currency ||= "USD"
   end
 end

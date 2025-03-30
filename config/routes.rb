@@ -26,5 +26,7 @@ Rails.application.routes.draw do
     resources :check_list_histories, only: [ :create ]
   end
 
-  resource :user_setting, only: [ :show, :update ], path: "user_settings"
+  resource :user_setting, only: [ :show, :edit ] do
+    post :update, on: :collection
+  end
 end

@@ -4,11 +4,14 @@ class UserSettingsController < ApplicationController
   def show
   end
 
+  def edit
+  end
+
   def update
     if @user_setting.update(user_setting_params)
-      redirect_to user_setting_path, notice: "Settings were successfully updated."
+      redirect_to user_setting_path, notice: "Settings updated!"
     else
-      render :show
+      render :edit
     end
   end
 
