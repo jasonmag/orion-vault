@@ -11,7 +11,6 @@
 # Optional: clean database before seeding
 puts "Clearing old data..."
 CheckListHistory.delete_all
-PaymentSchedule.delete_all
 List.delete_all
 UserSetting.delete_all
 User.delete_all

@@ -1,4 +1,4 @@
-puts "🌱 Seeding Users..."
+puts "Seeding Users..."
 
 3.times do
   User.create!(
