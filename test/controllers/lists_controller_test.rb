@@ -2,7 +2,7 @@ require "test_helper"
 
 class ListsControllerTest < ActionDispatch::IntegrationTest
   fixtures :users, :lists
-  
+
   setup do
     @user = users(:one)
 
