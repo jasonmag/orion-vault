@@ -30,7 +30,7 @@ module DueDateable
       day_of_month = payment_schedule.day_of_month || 1
 
       while current_date <= end_date
-        next_due = Date.new(current_date.year, current_date.month, [day_of_month, Date.civil(current_date.year, current_date.month, -1).day].min)
+        next_due = Date.new(current_date.year, current_date.month, [ day_of_month, Date.civil(current_date.year, current_date.month, -1).day ].min)
         due_dates << next_due if next_due.between?(start_date, end_date)
         current_date = current_date.next_month
       end
@@ -85,7 +85,7 @@ module DueDateable
     # Once due date within the given range
     def calculate_once_due_date(start_date, end_date)
       due_date = effective_start_date
-      due_date && due_date.between?(start_date, end_date) ? [due_date] : []
+      due_date && due_date.between?(start_date, end_date) ? [ due_date ] : []
     end
   end
 end
