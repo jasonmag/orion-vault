@@ -12,7 +12,9 @@
             = @list.name
           %p.text-sm.mb-4
             %b Price:
-            = Money.new(@list.price * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)          
+            - settings = current_user&.user_setting
+            - currency = settings&.default_currency || "AUD"  # or whatever default you prefer
+            = Money.new(@list.price * 100, currency).format(symbol: true, with_currency: false)          
           %p.text-sm.mb-4
             %b Description:
             = @list.description
@@ -20,9 +22,14 @@
           -#   %b Next Due date:
           -#   - if @list.next_due_date.present?
           -#     = @list.next_due_date.strftime("%B %d, %Y")
-          %p.text-sm.mb-4
-            %b Effective Start date:
-            = @list.effective_start_date.strftime("%B %d, %Y")
+          - if @list.effective_start_date.present?
+            %p.text-sm.mb-4
+              %b Effective Start date:
+              = @list.effective_start_date.strftime("%B %d, %Y")
+          - else
+            %p.text-sm.mb-4
+              %b Effective Start date:
+              N/A
 
           - if @list.effective_end_date.present?
             %p.text-sm.mb-4

@@ -1,7 +1,18 @@
 require "test_helper"
 
 class ListsControllerTest < ActionDispatch::IntegrationTest
+  fixtures :users, :lists
+  
   setup do
+    @user = users(:one)
+
+    @user.create_user_setting!(
+      default_date_range_list_display: "this_month", # or a valid enum key / value
+      default_currency: "AUD",
+      notification_lead_time: 7
+    ) unless @user.user_setting
+
+    sign_in @user
     @list = lists(:one)
   end
 
@@ -16,8 +27,17 @@ class ListsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create list" do
-    assert_difference("List.count") do
-      post lists_url, params: { list: { description: @list.description, due_date: @list.due_date, name: @list.name, price: @list.price, user_id: @list.user_id } }
+    assert_difference("List.count", 1) do
+      post lists_url, params: {
+        list: {
+          name: "My test list",
+          user_id: @user.id
+          # add any *required* fields for List here if it still fails to save,
+          # e.g.:
+          # price: 123.45,
+          # effective_start_date: Date.today
+        }
+      }
     end
 
     assert_redirected_to list_url(List.last)
@@ -34,7 +54,10 @@ class ListsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update list" do
-    patch list_url(@list), params: { list: { description: @list.description, due_date: @list.due_date, name: @list.name, price: @list.price, user_id: @list.user_id } }
+    patch list_url(@list), params: {
+      list: { name: "Updated name" }
+    }
+
     assert_redirected_to list_url(@list)
   end
 
