@@ -17,6 +17,8 @@ User.delete_all
 Admin.delete_all
 
 # Load seeds
-Dir[ Rails.root.join('db/seeds/*.rb') ].sort.each { |file| load file }
+Rails.root.glob('db/seeds/*.rb').sort.each do |file|
+  load file
+end
 
 puts "Done seeding!"
