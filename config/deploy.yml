@@ -18,7 +18,7 @@ servers:
 # Set ssl: false if using something like Cloudflare to terminate SSL (but keep host!).
 proxy:
   ssl: true
-  host: nexdue.jasonmag.com
+  host: nexduev2.jasonmag.com
   # kamal-proxy connects to your container over port 80, use `app_port` to specify a different port.
   app_port: 3000
 
@@ -26,7 +26,8 @@ proxy:
 registry:
   # Specify the registry server, if you're not using Docker Hub
   # server: registry.digitalocean.com / ghcr.io / ...
-  username: jasonmaglangit
+  username: 
+    - KAMAL_REGISTRY_USER
 
   # Always use an access token rather than real password (pulled from .kamal/secrets).
   password:
