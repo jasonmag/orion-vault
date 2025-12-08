@@ -1,4 +1,3 @@
-<% require "dotenv"; Dotenv.load(".env") %>
 # Name of your application. Used to uniquely configure containers.
 service: nexdue
 
@@ -18,7 +17,8 @@ servers:
 # Set ssl: false if using something like Cloudflare to terminate SSL (but keep host!).
 proxy:
   ssl: true
-  host: nexduev2.jasonmag.com
+  hosts:
+    - nexduev2.jasonmag.com
   # kamal-proxy connects to your container over port 80, use `app_port` to specify a different port.
   app_port: 3000
 
@@ -47,6 +47,8 @@ builder:
 env:
   secret:
     - RAILS_MASTER_KEY
+  clear:
+    SOLID_QUEUE_IN_PUMA: true
 
 # Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
 # "bin/kamal logs -r job" will tail logs from the first server in the job section.
