@@ -9,16 +9,8 @@
 #   end
 
 # Optional: clean database before seeding
-puts "Clearing old data..."
-CheckListHistory.delete_all
-List.delete_all
-UserSetting.delete_all
-User.delete_all
-Admin.delete_all
 
-# Load seeds
-Rails.root.glob('db/seeds/*.rb').sort.each do |file|
-  load file
-end
-
-puts "Done seeding!"
+load(Rails.root.join("db/seeds/01_admins.rb")) if Rails.env.development?
+load(Rails.root.join("db/seeds/02_users.rb")) if Rails.env.development?
+load(Rails.root.join("db/seeds/03_user_settings.rb")) if Rails.env.development?
+load(Rails.root.join("db/seeds/04_lists.rb")) if Rails.env.development?
