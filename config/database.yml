@@ -27,7 +27,23 @@ test:
 #
 # Similarly, if you deploy your application as a Docker container, you must
 # ensure the database is located in a persisted volume.
-production:
-  <<: *default
+# production:
+  # <<: *default
   # database: path/to/persistent/storage/production.sqlite3
-  database: storage/<%= Rails.application.class.module_parent_name.downcase %>_production.sqlite3
+  # database: storage/<%= Rails.application.class.module_parent_name.downcase %>_production.sqlite3
+production:
+  primary:
+    <<: *default
+    database: storage/<%= Rails.application.class.module_parent_name.downcase %>_production.sqlite3
+  cache:
+    <<: *default
+    database: storage/<%= Rails.application.class.module_parent_name.downcase %>_production_cache.sqlite3
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *default
+    database: storage/<%= Rails.application.class.module_parent_name.downcase %>_production_queue.sqlite3
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: storage/<%= Rails.application.class.module_parent_name.downcase %>_production_cable.sqlite3
+    migrations_paths: db/cable_migrate
