@@ -7,7 +7,7 @@ image: jasonmaglangit/nexdue
 # Deploy to these servers.
 servers:
   web:
-    - nexduev2.jasonmag.com
+    - nexstar3
   # job:
   #   hosts:
   #     - 192.168.0.1
