@@ -1,21 +1,12 @@
-%body.bg-background
-  .bg-background
-    .relative.isolate.px-6.pt-14.lg:px-8.mx-auto
-      .mx-auto.max-w-2xl.py-32.sm:py-48.lg:py-56
-        %h1.text-3xl.font-bold.text-center.mb-8 Settings
+.bg-background
+  .relative.isolate.px-6.pt-14.lg:px-8.mx-auto
+    .mx-auto.max-w-2xl.py-16.sm:py-24.lg:py-28
+      %h1.text-3xl.font-bold.text-center.mb-4 Settings
+      %p.text-center.text-gray-600.mb-6 Changes are saved automatically.
 
-        .space-y-4.text-gray-800.text-lg
-          %p
-            %strong Display Days from Current day:
-            = @user_setting.default_date_range_list_display
+      = render "status", message: "Auto-save is on.", variant: :info
 
-          %p
-            %strong Default Currency:
-            = @user_setting.default_currency
+      - autosave_data = { controller: "autosave", autosave_delay_value: 400, action: "input->autosave#queueSubmit change->autosave#queueSubmit turbo:submit-end->autosave#handleSubmitEnd", autosave_target: "form" }
 
-          %p
-            %strong Notify days before due:
-            = @user_setting.notification_lead_time
-
-        .mt-8.text-center
-          = link_to "Edit Settings", edit_user_setting_path, class: "inline-block px-4 py-2 bg-indigo-600 text-white font-bold rounded hover:bg-indigo-700"
+      = form_with model: @user_setting, url: user_setting_path, method: :post, data: autosave_data do |f|
+        = render "form_field", f: f

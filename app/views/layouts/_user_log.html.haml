@@ -1,4 +1,11 @@
-- if user_signed_in?
+- if admin_signed_in?
+  - if local_assigns[:mobile]
+    = button_to 'Admin log out', destroy_admin_session_path, method: :delete, data: { turbo: false }, class: "-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center"
+  - else
+    .hidden.lg:flex.lg:flex-1.lg:justify-end
+      = button_to 'Admin log out', destroy_admin_session_path, method: :delete, data: { turbo: false }, class: "text-sm font-semibold leading-6 text-gray-900 flex items-center"
+      %span{ aria: { hidden: "true" }, class: "ml-2" } &#x2716;
+- elsif user_signed_in?
   - if local_assigns[:mobile]
     = button_to 'Log out', destroy_user_session_path, method: :delete, class: "-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center"
   - else

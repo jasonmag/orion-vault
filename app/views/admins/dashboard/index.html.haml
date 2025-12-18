@@ -1,0 +1,99 @@
+- content_for :title, "Admin Dashboard"
+
+%section.mb-10
+  .flex.flex-col.lg:flex-row.lg:items-center.lg:justify-between.gap-4
+    %div
+      %p.text-sm.uppercase.font-semibold.text-emerald-700 Tracking
+      %h1.text-4xl.font-bold.text-gray-900.mt-1 Admin Dashboard
+      %p.text-gray-600.mt-2 Overview of customers, lists, payments, and recent activity.
+    .flex.flex-wrap.gap-3
+      = link_to "Export lists (CSV)", admin_dashboard_path(format: :csv), data: { turbo: false }, class: "inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 transition"
+      = link_to "Add admin", new_admin_registration_path, class: "inline-flex items-center rounded-lg border border-emerald-200 bg-white px-4 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-50 transition"
+
+= turbo_frame_tag "admin_metrics" do
+  - labels = { admins: "Admins", users: "Users", lists_total: "Total lists", lists_active: "Active lists", payment_schedules: "Payment schedules", check_ins: "Check-ins" }
+  .grid.grid-cols-1.md:grid-cols-2.xl:grid-cols-3.gap-4
+    - labels.each do |key, label|
+      %div{ class: "rounded-2xl bg-white/80 p-5 shadow-sm ring-1 ring-emerald-50" }
+        %div.flex.items-center.justify-between
+          %p.text-sm.font-semibold.text-gray-600= label
+        %p.text-3xl.font-semibold.text-gray-900.mt-2= number_with_delimiter(@metrics[key])
+        - if key == :lists_total
+          %p.text-xs.text-gray-500.mt-1 Includes archived lists
+        - elsif key == :lists_active
+          %p.text-xs.text-gray-500.mt-1 Excludes soft-deleted lists
+
+%section.mt-10.space-y-6
+  %div.flex.items-center.justify-between
+    %h2.text-xl.font-semibold.text-gray-900 Actions
+    %p.text-sm.text-gray-500 Data-aware shortcuts for day-to-day admin work.
+
+  = turbo_frame_tag "admin_actions" do
+    .grid.grid-cols-1.md:grid-cols-3.gap-4
+      %div{ class: "rounded-2xl bg-white/80 p-5 shadow-sm ring-1 ring-emerald-50" }
+        %h3.text-lg.font-semibold.text-gray-900 Manage admins
+        %p.text-sm.text-gray-600.mt-1 Create or update admin accounts for trusted teammates.
+        .mt-3.flex.gap-3
+          = link_to "Invite admin", new_admin_registration_path, class: "inline-flex items-center rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition"
+          = link_to "Log out", destroy_admin_session_path, data: { turbo: false, turbo_method: :delete }, class: "inline-flex items-center rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition"
+
+      %div{ class: "rounded-2xl bg-white/80 p-5 shadow-sm ring-1 ring-emerald-50" }
+        %h3.text-lg.font-semibold.text-gray-900 Data exports
+        %p.text-sm.text-gray-600.mt-1 Pull a CSV snapshot of all lists with owners and status for auditing.
+        .mt-3
+          = link_to "Download lists CSV", admin_dashboard_path(format: :csv), data: { turbo: false }, class: "inline-flex items-center rounded-lg bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800 ring-1 ring-emerald-200 hover:bg-emerald-100 transition"
+
+      %div{ class: "rounded-2xl bg-white/80 p-5 shadow-sm ring-1 ring-emerald-50" }
+        %h3.text-lg.font-semibold.text-gray-900 Review recent activity
+        %p.text-sm.text-gray-600.mt-1 Check the latest user signups, list updates, and checklist approvals.
+        .mt-3
+          %a.inline-flex.items-center.rounded-lg.border.border-gray-200.bg-white.px-3.py-2.text-sm.font-semibold.text-gray-700.hover:bg-gray-50.transition{ href: "#activity" }
+            Jump to activity
+
+%section.mt-12.space-y-6{id: "activity"}
+  %div.flex.items-center.justify-between
+    %h2.text-xl.font-semibold.text-gray-900 Recent activity
+    %p.text-sm.text-gray-500 Latest signups, list changes, and checklist updates.
+
+  = turbo_frame_tag "admin_activity" do
+    .grid.grid-cols-1.lg:grid-cols-3.gap-4
+      %div{ class: "rounded-2xl bg-white/80 p-5 shadow-sm ring-1 ring-emerald-50" }
+        %div.flex.items-center.justify-between
+          %h3.text-lg.font-semibold.text-gray-900 New users
+          %span.text-xs.text-gray-500 Last 5
+        %ul.mt-3.space-y-2
+          - @recent_users.each do |user|
+            %li.flex.items-center.justify-between.rounded-lg.bg-white.p-3.ring-1.ring-gray-100
+              %div
+                %p.text-sm.font-semibold.text-gray-900= user.email
+                %p.text-xs.text-gray-500= "#{time_ago_in_words(user.created_at)} ago"
+
+      %div{ class: "rounded-2xl bg-white/80 p-5 shadow-sm ring-1 ring-emerald-50" }
+        %div.flex.items-center.justify-between
+          %h3.text-lg.font-semibold.text-gray-900 Recent lists
+          %span.text-xs.text-gray-500 Last 5
+        %ul.mt-3.space-y-2
+          - @recent_lists.each do |list|
+            %li.rounded-lg.bg-white.p-3.ring-1.ring-gray-100
+              %div.flex.items-center.justify-between
+                %div
+                  %p.text-sm.font-semibold.text-gray-900= list.name.presence || "Untitled list"
+                  %p.text-xs.text-gray-500= list.user&.email || "Unknown owner"
+                - if list.deleted?
+                  %span{ class: "inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-[11px] font-semibold text-red-700" } Archived
+                - else
+                  %span{ class: "inline-flex items-center rounded-full bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-700" } Active
+
+      %div{ class: "rounded-2xl bg-white/80 p-5 shadow-sm ring-1 ring-emerald-50" }
+        %div.flex.items-center.justify-between
+          %h3.text-lg.font-semibold.text-gray-900 Checklist updates
+          %span.text-xs.text-gray-500 Last 5
+        %ul.mt-3.space-y-2
+          - @recent_activity.each do |entry|
+            %li.rounded-lg.bg-white.p-3.ring-1.ring-gray-100
+              %div.flex.items-start.justify-between.gap-3
+                %div
+                  %p.text-sm.font-semibold.text-gray-900= entry.list&.name || "List removed"
+                  %p.text-xs.text-gray-500= entry.user&.email || "User removed"
+                  %p.text-xs.text-gray-500.mt-1= "Due #{entry.due_date} • #{entry.checked? ? "Checked" : "Pending"}"
+                %span.text-xs.text-gray-500= "#{time_ago_in_words(entry.created_at)} ago"

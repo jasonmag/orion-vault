@@ -5,13 +5,32 @@ class UserSettingsController < ApplicationController
   end
 
   def edit
+    redirect_to user_setting_path
   end
 
   def update
     if @user_setting.update(user_setting_params)
-      redirect_to user_setting_path, notice: "Settings updated!"
+      respond_to do |format|
+        format.html { redirect_to user_setting_path, notice: "Settings updated!" }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "user_setting_status",
+            partial: "user_settings/status",
+            locals: { message: "Saved", variant: :success }
+          )
+        end
+      end
     else
-      render :edit
+      respond_to do |format|
+        format.html { render :show, status: :unprocessable_entity }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "user_setting_status",
+            partial: "user_settings/status",
+            locals: { message: "Check inputs and try again", variant: :error }
+          ), status: :unprocessable_entity
+        end
+      end
     end
   end
 

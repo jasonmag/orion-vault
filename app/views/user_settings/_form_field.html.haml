@@ -1,38 +1,20 @@
-%div{"data-controller" => "user-setting" }
-  .field.mb-4
-    %label.block.text-gray-700.font-bold.mb-2{ for: "user_setting_default_date_range_list_display" }
-      Display Days from Current day
-      %span.text-red-500 *
-    %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{
-      type: "text",
-      name: "user_setting[default_date_range_list_display]",
-      id: "user_setting_default_date_range_list_display",
-      value: @user_setting.default_date_range_list_display
-    }
+.space-y-5
+  .field
+    = f.label :default_date_range_list_display, "Display Days from Current day", class: "block text-gray-700 font-bold mb-2"
+    = f.number_field :default_date_range_list_display,
+      class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline",
+      min: 1
 
-  .field.mb-4
-    %label.block.text-gray-700.font-bold.mb-2{ for: "user_setting_default_currency" }
-      Default Currency
-    %select.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{
-      name: "user_setting[default_currency]",
-      id: "user_setting_default_currency"
-    }
-      - Money::Currency.table.each_value do |currency|
-        %option{ value: currency[:iso_code], selected: @user_setting.default_currency == currency[:iso_code] }
-          = "#{currency[:iso_code]} (#{currency[:symbol]})"
+  .field
+    = f.label :default_currency, "Default Currency", class: "block text-gray-700 font-bold mb-2"
+    - currency_options = Money::Currency.table.values.map { |currency| ["#{currency[:iso_code]} (#{currency[:symbol]})", currency[:iso_code]] }
+    = f.select :default_currency,
+      options_for_select(currency_options, @user_setting.default_currency),
+      {},
+      class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 
-  .field.mb-4
-    %label.block.text-gray-700.font-bold.mb-2{ for: "user_setting_notification_lead_time" }
-      Notify days before due
-      %span.text-red-500 *
-    %input.shadow.appearance-none.border.rounded.w-full.py-2.px-3.text-gray-700.leading-tight.focus:outline-none.focus:shadow-outline{
-      type: "number",
-      name: "user_setting[notification_lead_time]",
-      id: "user_setting_notification_lead_time",
-      value: @user_setting.notification_lead_time
-    }
-
-  .field.mb-4
-    .flex.justify-center
-      %button.shadow.bg-indigo-600.hover:bg-indigo-700.text-white.font-bold.py-2.px-4.rounded{ type: "submit" }
-        Save Settings
+  .field
+    = f.label :notification_lead_time, "Notify days before due", class: "block text-gray-700 font-bold mb-2"
+    = f.number_field :notification_lead_time,
+      class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline",
+      min: 0

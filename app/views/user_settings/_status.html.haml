@@ -1,0 +1,5 @@
+- variant_styles = { info: "text-emerald-700 bg-emerald-50 ring-emerald-100", success: "text-emerald-700 bg-emerald-50 ring-emerald-100", error: "text-red-700 bg-red-50 ring-red-100" }
+- style = variant_styles[variant || :info]
+
+%div#user_setting_status{ class: "mb-4 rounded-lg px-4 py-3 text-sm font-semibold ring-1 #{style}", data: { autosave_target: "status" } }
+  = message
