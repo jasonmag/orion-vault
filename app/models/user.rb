@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_one :user_setting, dependent: :destroy
   accepts_nested_attributes_for :user_setting
   has_many :list
+  has_many :expenses, dependent: :destroy
 
   after_create :create_default_user_setting
 

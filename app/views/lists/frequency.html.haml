@@ -1,0 +1,59 @@
+%body.bg-background
+  .bg-background
+    .relative.isolate.px-6.pt-8.lg:px-8.mx-auto
+      .mx-auto.max-w-5xl.py-16.sm:py-24.lg:py-28
+        .flex.items-center.justify-between.mb-6
+          %h1.text-2xl.font-bold Frequency Overview
+          = link_to lists_path, class: "text-black underline" do
+            Back to Dues
+
+        - current_active = @status != "expired"
+        - current_classes = "px-4 py-2 text-sm font-semibold border border-gray-300 rounded-l-md " + (current_active ? "bg-gray-900 text-white" : "bg-white text-gray-700 hover:bg-gray-50")
+        - expired_classes = "px-4 py-2 text-sm font-semibold border border-gray-300 rounded-r-md -ml-px " + (!current_active ? "bg-gray-900 text-white" : "bg-white text-gray-700 hover:bg-gray-50")
+        .inline-flex.rounded-md.shadow-sm.mb-8{ role: "tablist" }
+          = link_to "Current/Active", frequency_lists_path(status: "current"), class: current_classes
+          = link_to "Expired", frequency_lists_path(status: "expired"), class: expired_classes
+
+        - frequencies = PaymentSchedule::FREQUENCIES + ["unscheduled"]
+        - available_frequencies = frequencies.select do |frequency|
+          - (@lists_by_frequency[frequency] || []).any?
+        - if available_frequencies.any?
+          .space-y-6{ data: { controller: "frequency-tabs" } }
+            .inline-flex.rounded-md.shadow-sm{ role: "tablist" }
+              - available_frequencies.each_with_index do |frequency, index|
+                - label = frequency == "unscheduled" ? "Unscheduled" : frequency.capitalize.gsub("_", " ")
+                - active = index.zero?
+                %button.px-4.py-2.text-sm.font-semibold.border.border-gray-300.-ml-px.first:ml-0{ type: "button", role: "tab", aria: { selected: active ? "true" : "false", controls: "frequency-panel-#{frequency}" }, data: { action: "click->frequency-tabs#show", frequency_tabs_target: "tab", frequency_value: frequency, active: active ? "true" : nil, active_class: "bg-gray-900 text-white border-gray-900", inactive_class: "bg-white text-gray-700 hover:bg-gray-50" } }= label
+
+            - available_frequencies.each_with_index do |frequency, index|
+              - lists = @lists_by_frequency[frequency] || []
+              - label = frequency == "unscheduled" ? "Unscheduled" : frequency.capitalize.gsub("_", " ")
+              %section.mb-10{ id: "frequency-panel-#{frequency}", role: "tabpanel", class: (index.zero? ? nil : "hidden"), data: { frequency_tabs_target: "panel", frequency: frequency } }
+                .rounded-xl.border.border-gray-200.bg-white.shadow-sm
+                  .flex.items-center.justify-between.border-b.border-gray-100.px-5.py-4
+                    %h2.text-lg.font-semibold.text-gray-900= label
+                  .overflow-x-auto
+                    %table.min-w-full.divide-y.divide-gray-200.bg-white
+                      %thead.bg-gray-50
+                        %tr
+                          %th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Name
+                          %th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Frequency
+                          %th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Effective Dates
+                          %th.px-4.py-3.text-right.text-sm.font-semibold.text-gray-700 Price
+                          %th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Status
+                      %tbody.divide-y.divide-gray-100
+                        - lists.each do |list|
+                          - frequency_label = list.payment_schedule&.human_readable_frequency || "Unscheduled"
+                          - start_date = list.effective_start_date&.strftime("%b %d, %Y") || "N/A"
+                          - end_date = list.effective_end_date&.strftime("%b %d, %Y") || "No end"
+                          - status_label = list.effective_end_date.present? && list.effective_end_date < Date.current ? "Expired" : "Current"
+                          %tr
+                            %td.px-4.py-3.text-sm.text-gray-900
+                              = link_to list.name, list_path(list), class: "underline"
+                            %td.px-4.py-3.text-sm.text-gray-700= frequency_label
+                            %td.px-4.py-3.text-sm.text-gray-700= "#{start_date} - #{end_date}"
+                            %td.px-4.py-3.text-sm.text-gray-900.text-right
+                              = Money.new(list.price * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+                            %td.px-4.py-3.text-sm.text-gray-700= status_label
+        - else
+          %p.text-gray-700 No items found for this status.

@@ -35,6 +35,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_29_161432) do
     t.index ["user_id"], name: "index_check_list_histories_on_user_id"
   end
 
+  create_table "expenses", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "list_id"
+    t.string "name", null: false
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.date "paid_at", null: false
+    t.string "payment_method"
+    t.string "source", null: false
+    t.date "due_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["list_id"], name: "index_expenses_on_list_id"
+    t.index ["user_id"], name: "index_expenses_on_user_id"
+  end
+
   create_table "lists", force: :cascade do |t|
     t.string "name"
     t.decimal "price", precision: 8, scale: 2
@@ -85,6 +100,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_29_161432) do
 
   add_foreign_key "check_list_histories", "lists"
   add_foreign_key "check_list_histories", "users"
+  add_foreign_key "expenses", "lists"
+  add_foreign_key "expenses", "users"
   add_foreign_key "lists", "users"
   add_foreign_key "payment_schedules", "lists"
   add_foreign_key "user_settings", "users"

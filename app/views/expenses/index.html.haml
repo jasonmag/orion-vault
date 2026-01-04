@@ -1,0 +1,73 @@
+%body.bg-background
+  .bg-background
+    .relative.isolate.px-6.pt-8.lg:px-8.mx-auto
+      .mx-auto.max-w-5xl.py-16.sm:py-24.lg:py-28
+        .flex.items-center.justify-between.mb-6
+          %h1.text-2xl.font-bold Expenses
+          = link_to lists_path, class: "text-black underline" do
+            Back to Dues
+
+        .grid.grid-cols-1.lg:grid-cols-3.gap-8.mb-10
+          .lg:col-span-1
+            %h2.text-lg.font-semibold.mb-4 Add Manual Expense
+            = form_with(model: @expense, url: expenses_path, class: "space-y-4") do |f|
+              - if @expense.errors.any?
+                .rounded-md.bg-red-50.p-4.text-sm.text-red-700
+                  = @expense.errors.full_messages.to_sentence
+
+              .space-y-1
+                = f.label :name, class: "block text-sm font-semibold text-gray-700"
+                = f.text_field :name, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900", placeholder: "Groceries, subway fare, etc."
+
+              .space-y-1
+                = f.label :amount, class: "block text-sm font-semibold text-gray-700"
+                = f.number_field :amount, step: "0.01", class: "w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900", placeholder: "0.00"
+
+              .space-y-1
+                = f.label :paid_at, "Paid on", class: "block text-sm font-semibold text-gray-700"
+                = f.date_field :paid_at, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+
+              .space-y-1
+                = f.label :payment_method, class: "block text-sm font-semibold text-gray-700"
+                = f.select :payment_method, [["Cash", "cash"], ["Card", "card"], ["Bank Transfer", "bank_transfer"], ["Other", "other"]], { include_blank: "Select method" }, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+
+              = f.submit "Add Expense", class: "w-full rounded-md bg-black px-4 py-2 text-sm font-semibold text-white"
+
+          .lg:col-span-2
+            %h2.text-lg.font-semibold.mb-4 Expense List
+            .overflow-x-auto
+              %table.min-w-full.border.border-gray-200.bg-white
+                %thead.bg-gray-100
+                  %tr
+                    %th.px-4.py-2.text-left.text-sm.font-semibold.text-gray-700 Name
+                    %th.px-4.py-2.text-left.text-sm.font-semibold.text-gray-700 Source
+                    %th.px-4.py-2.text-left.text-sm.font-semibold.text-gray-700 Paid On
+                    %th.px-4.py-2.text-left.text-sm.font-semibold.text-gray-700 Due Date
+                    %th.px-4.py-2.text-left.text-sm.font-semibold.text-gray-700 Method
+                    %th.px-4.py-2.text-right.text-sm.font-semibold.text-gray-700 Amount
+                    %th.px-4.py-2.text-right.text-sm.font-semibold.text-gray-700
+                %tbody.divide-y.divide-gray-200
+                  - if @expenses.any?
+                    - @expenses.each do |expense|
+                      - source_label = expense.source == Expense::SOURCE_DUE ? "Due" : "Manual"
+                      - paid_at_label = expense.paid_at&.strftime("%b %d, %Y") || "N/A"
+                      - due_date_label = expense.due_date&.strftime("%b %d, %Y") || "—"
+                      - method_label = expense.payment_method.present? ? expense.payment_method.tr("_", " ").titleize : "Unspecified"
+                      %tr
+                        %td.px-4.py-3.text-sm.text-gray-900
+                          - if expense.list.present?
+                            = link_to expense.name, list_path(expense.list), class: "underline"
+                          - else
+                            = expense.name
+                        %td.px-4.py-3.text-sm.text-gray-700= source_label
+                        %td.px-4.py-3.text-sm.text-gray-700= paid_at_label
+                        %td.px-4.py-3.text-sm.text-gray-700= due_date_label
+                        %td.px-4.py-3.text-sm.text-gray-700= method_label
+                        %td.px-4.py-3.text-sm.text-gray-900.text-right
+                          = Money.new(expense.amount * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+                        %td.px-4.py-3.text-sm.text-right
+                          - if expense.source == Expense::SOURCE_MANUAL
+                            = button_to "Remove", expense_path(expense), method: :delete, class: "text-sm font-semibold text-red-600 underline"
+                  - else
+                    %tr
+                      %td.px-4.py-6.text-sm.text-gray-600{ colspan: "7" } No expenses yet.

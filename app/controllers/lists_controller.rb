@@ -14,6 +14,23 @@ class ListsController < ApplicationController
     @lists_with_due_dates.sort_by! { |entry| entry[:due_date] }
   end
 
+  def frequency
+    today = Date.current
+    @status = params[:status] == "expired" ? "expired" : "current"
+    lists_scope = current_user.list.includes(:payment_schedule)
+
+    if @status == "expired"
+      lists_scope = lists_scope.where("effective_end_date IS NOT NULL AND effective_end_date < ?", today)
+    else
+      lists_scope = lists_scope.where("effective_start_date <= ?", today)
+        .where("effective_end_date IS NULL OR effective_end_date >= ?", today)
+    end
+
+    @lists_by_frequency = lists_scope.order(:name).group_by do |list|
+      list.payment_schedule&.frequency || "unscheduled"
+    end
+  end
+
   # GET /lists/1 or /lists/1.json
   def show
   end

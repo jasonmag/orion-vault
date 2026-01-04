@@ -31,9 +31,13 @@ Rails.application.routes.draw do
   root "pages#home"
 
   resources :lists do
+    get "frequency", on: :collection
     get "select_dates", on: :collection
     resources :check_list_histories, only: [ :create ]
   end
+
+  get "insights" => "insights#index"
+  resources :expenses, only: [ :index, :create, :destroy ]
 
   resource :user_setting, only: [ :show, :edit ] do
     post :update, on: :collection
