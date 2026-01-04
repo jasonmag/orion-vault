@@ -1,0 +1,40 @@
+%body.bg-background
+  .bg-background
+    .relative.isolate.px-6.pt-8.lg:px-8.mx-auto
+      .mx-auto.max-w-3xl.py-16.sm:py-24.lg:py-28
+        .flex.items-center.justify-between.mb-6
+          %div
+            %h1.text-2xl.font-bold Edit expense
+            %p.text-sm.text-gray-600 Update details and payment method.
+          = link_to 'Back to Expenses', expenses_path, class: "text-sm font-semibold text-gray-700 hover:text-gray-900"
+
+        .rounded-xl.border.border-gray-200.bg-white.p-6.shadow-sm
+          = form_with model: @expense, url: expense_path(@expense), method: :patch, class: "space-y-6" do |f|
+            - if @expense.errors.any?
+              .rounded-md.bg-red-50.p-4.text-sm.text-red-700
+                = @expense.errors.full_messages.to_sentence
+
+            .grid.grid-cols-1.gap-6.sm:grid-cols-2
+              .space-y-2
+                %p.text-sm.font-semibold.text-gray-700 Name
+                %p.text-sm.text-gray-900= @expense.name
+
+              .space-y-2
+                %p.text-sm.font-semibold.text-gray-700 Amount
+                %p.text-sm.text-gray-900
+                  = Money.new(@expense.amount * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+
+              .space-y-2
+                %p.text-sm.font-semibold.text-gray-700 Paid on
+                %p.text-sm.text-gray-900= @expense.paid_at&.strftime("%b %d, %Y")
+
+              .space-y-2
+                = f.label :payment_method, class: "block text-sm font-semibold text-gray-700"
+                = f.select :payment_method,
+                  [["Cash In", "cash_in"], ["Cash", "cash"], ["Card", "card"], ["Bank Transfer", "bank_transfer"], ["Other", "other"]],
+                  { include_blank: "Unspecified" },
+                  class: "w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900"
+
+            .flex.items-center.justify-end.gap-3
+              = link_to "Cancel", expenses_path, class: "text-sm font-semibold text-gray-700 hover:text-gray-900"
+              = f.submit "Save changes", class: "inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800"

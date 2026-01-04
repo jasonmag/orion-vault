@@ -52,7 +52,6 @@
                       - source_label = expense.source == Expense::SOURCE_DUE ? "Due" : "Manual"
                       - paid_at_label = expense.paid_at&.strftime("%b %d, %Y") || "N/A"
                       - due_date_label = expense.due_date&.strftime("%b %d, %Y") || "—"
-                      - method_label = expense.payment_method.present? ? expense.payment_method.tr("_", " ").titleize : "Unspecified"
                       %tr
                         %td.px-4.py-3.text-sm.text-gray-900
                           - if expense.list.present?
@@ -62,12 +61,23 @@
                         %td.px-4.py-3.text-sm.text-gray-700= source_label
                         %td.px-4.py-3.text-sm.text-gray-700= paid_at_label
                         %td.px-4.py-3.text-sm.text-gray-700= due_date_label
-                        %td.px-4.py-3.text-sm.text-gray-700= method_label
+                        %td.px-4.py-3.text-sm.text-gray-700
+                          - method_label = expense.payment_method.present? ? expense.payment_method.tr("_", " ").titleize : "Unspecified"
+                          = method_label
                         %td.px-4.py-3.text-sm.text-gray-900.text-right
                           = Money.new(expense.amount * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
                         %td.px-4.py-3.text-sm.text-right
+                          = link_to "Edit", edit_expense_path(expense), class: "text-sm font-semibold text-gray-700 underline"
                           - if expense.source == Expense::SOURCE_MANUAL
                             = button_to "Remove", expense_path(expense), method: :delete, class: "text-sm font-semibold text-red-600 underline"
                   - else
                     %tr
                       %td.px-4.py-6.text-sm.text-gray-600{ colspan: "7" } No expenses yet.
+            - if @total_pages.to_i > 1
+              .mt-4.flex.items-center.justify-between.text-sm.text-gray-700
+                %span Page #{@page} of #{@total_pages}
+                .flex.items-center.gap-2
+                  - if @page > 1
+                    = link_to "Previous", expenses_path(page: @page - 1), class: "rounded-md border border-gray-300 px-3 py-1 hover:bg-gray-50"
+                  - if @page < @total_pages
+                    = link_to "Next", expenses_path(page: @page + 1), class: "rounded-md border border-gray-300 px-3 py-1 hover:bg-gray-50"

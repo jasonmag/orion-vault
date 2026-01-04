@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   end
 
   get "insights" => "insights#index"
-  resources :expenses, only: [ :index, :create, :destroy ]
+  resources :expenses, only: [ :index, :create, :edit, :update, :destroy ]
 
   resource :user_setting, only: [ :show, :edit ] do
     post :update, on: :collection

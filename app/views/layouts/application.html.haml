@@ -16,6 +16,7 @@
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_importmap_tags
   %body.bg-greenleaf
-    %main.container.mx-auto.mt-8.px-5
+    - main_classes = content_for?(:main_classes) ? yield(:main_classes) : "container mx-auto mt-8 px-5"
+    %main{ class: main_classes }
       = render "layouts/header"
       = yield
