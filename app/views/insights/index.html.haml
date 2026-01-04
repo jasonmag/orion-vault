@@ -9,23 +9,23 @@
 
         .grid.grid-cols-1.md:grid-cols-3.gap-6.mb-10
           .rounded-lg.border.border-gray-200.bg-white.p-5
-            %p.text-sm.text-gray-500 Total spend (last 6 months)
+            %p.text-sm.text-gray-500 Total cash-out (last 6 months)
             %p.text-2xl.font-semibold.text-gray-900
               = Money.new(@total_spend * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
           .rounded-lg.border.border-gray-200.bg-white.p-5
-            %p.text-sm.text-gray-500 Due-paid spend
+            %p.text-sm.text-gray-500 Cash-in (last 6 months)
             %p.text-2xl.font-semibold.text-gray-900
-              = Money.new(@due_spend * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+              = Money.new(@total_cash_in * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
           .rounded-lg.border.border-gray-200.bg-white.p-5
-            %p.text-sm.text-gray-500 Manual spend
+            %p.text-sm.text-gray-500 Net (cash-in minus cash-out)
             %p.text-2xl.font-semibold.text-gray-900
-              = Money.new(@manual_spend * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+              = Money.new(@net_total * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
 
         .rounded-xl.border.border-gray-200.bg-white.p-6
           .flex.items-center.justify-between.mb-4
             %div
-              %h2.text-lg.font-semibold Monthly spend mix
-              %p.text-sm.text-gray-500 Due-paid vs manual, last 6 months
+              %h2.text-lg.font-semibold Monthly cashflow mix
+              %p.text-sm.text-gray-500 Cash-out vs cash-in, last 6 months
             .flex.items-center.gap-4.text-sm.text-gray-600
               .flex.items-center.gap-2
                 %span.inline-block.h-3.w-3.rounded-full.bg-emerald-500
@@ -33,20 +33,27 @@
               .flex.items-center.gap-2
                 %span.inline-block.h-3.w-3.rounded-full.bg-amber-400
                 Manual
+              .flex.items-center.gap-2
+                %span.inline-block.h-3.w-3.rounded-full.bg-sky-500
+                Cash-in
 
-          - if @max_total.zero?
-            %p.text-sm.text-gray-600 No expenses in the last 6 months.
+          - if @max_spend.zero? && @max_cash_in.zero?
+            %p.text-sm.text-gray-600 No cash activity in the last 6 months.
           - else
             .space-y-4
               - @monthly_rows.each do |row|
-                - total_width = @max_total.positive? ? ((row[:total].to_f / @max_total.to_f) * 100).round(2) : 0
-                - due_width = row[:total].positive? ? ((row[:due].to_f / row[:total].to_f) * 100).round(2) : 0
-                - manual_width = row[:total].positive? ? ((row[:manual].to_f / row[:total].to_f) * 100).round(2) : 0
+                - spend_width = @max_spend.positive? ? ((row[:total_spend].to_f / @max_spend.to_f) * 100).round(2) : 0
+                - cash_in_width = @max_cash_in.positive? ? ((row[:cash_in].to_f / @max_cash_in.to_f) * 100).round(2) : 0
+                - due_width = row[:total_spend].positive? ? ((row[:due].to_f / row[:total_spend].to_f) * 100).round(2) : 0
+                - manual_width = row[:total_spend].positive? ? ((row[:manual].to_f / row[:total_spend].to_f) * 100).round(2) : 0
                 .grid.grid-cols-12.items-center.gap-3
                   %div.col-span-3.text-sm.font-semibold.text-gray-700= row[:month]
                   .col-span-7
-                    .h-3.rounded-full.bg-gray-100.overflow-hidden{ style: "width: #{total_width}%" }
-                      .h-3.bg-emerald-500.inline-block{ style: "width: #{due_width}%" }
-                      .h-3.bg-amber-400.inline-block{ style: "width: #{manual_width}%" }
+                    .space-y-2
+                      .h-3.rounded-full.bg-gray-100.overflow-hidden{ style: "width: #{spend_width}%" }
+                        .h-3.bg-emerald-500.inline-block{ style: "width: #{due_width}%" }
+                        .h-3.bg-amber-400.inline-block{ style: "width: #{manual_width}%" }
+                      .h-3.rounded-full.bg-sky-100.overflow-hidden{ style: "width: #{cash_in_width}%" }
+                        .h-3.bg-sky-500.inline-block{ style: "width: 100%" }
                   %div.col-span-2.text-right.text-sm.text-gray-700
-                    = Money.new(row[:total] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+                    = Money.new(row[:total_spend] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)

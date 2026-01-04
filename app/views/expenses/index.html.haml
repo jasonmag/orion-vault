@@ -29,7 +29,7 @@
 
               .space-y-1
                 = f.label :payment_method, class: "block text-sm font-semibold text-gray-700"
-                = f.select :payment_method, [["Cash", "cash"], ["Card", "card"], ["Bank Transfer", "bank_transfer"], ["Other", "other"]], { include_blank: "Select method" }, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+                = f.select :payment_method, [["Cash In", "cash_in"], ["Cash", "cash"], ["Card", "card"], ["Bank Transfer", "bank_transfer"], ["Other", "other"]], { include_blank: "Select method" }, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
 
               = f.submit "Add Expense", class: "w-full rounded-md bg-black px-4 py-2 text-sm font-semibold text-white"
 
