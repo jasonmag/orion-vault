@@ -22,7 +22,7 @@
           .flex.flex-wrap.items-center.gap-3
             %button{ type: "submit", form: "login-form", class: "w-64 h2 inline-flex items-center justify-center rounded-md bg-gray-400 px-3 py-2 text-xl font-semibold text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray" }
               Log in
-            = button_to omniauth_authorize_path(resource_name, :google_oauth2), data: { turbo: false }, class: "w-64 inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-xl font-semibold text-gray-700 hover:bg-gray-50", form_class: "inline" do
+            = button_to user_google_oauth2_omniauth_authorize_path, data: { turbo: false }, class: "w-64 inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-xl font-semibold text-gray-700 hover:bg-gray-50", form_class: "inline" do
               %svg.h-5.w-5{ viewBox: "0 0 48 48", aria: { hidden: "true" } }
                 %path{ fill: "#EA4335", d: "M24 9.5c3.54 0 6.68 1.22 9.16 3.22l6.84-6.84C35.64 2.34 30.14 0 24 0 14.62 0 6.6 5.38 2.7 13.2l7.95 6.18C12.36 13.16 17.74 9.5 24 9.5z" }
                 %path{ fill: "#4285F4", d: "M46.1 24.55c0-1.64-.15-3.21-.42-4.73H24v9.02h12.4c-.54 2.9-2.19 5.35-4.67 7.01l7.18 5.57C42.94 37.5 46.1 31.6 46.1 24.55z" }
