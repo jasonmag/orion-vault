@@ -4,8 +4,10 @@
       .mx-auto.max-w-5xl.py-16.sm:py-24.lg:py-28
         .flex.items-center.justify-between.mb-6
           %h1.text-2xl.font-bold Frequency Overview
-          = link_to lists_path, class: "text-black underline" do
-            Back to Dues
+          .flex.items-center.gap-4
+            = render "lists/add_list"
+            = link_to lists_path, class: "text-black underline" do
+              Back to Dues
 
         - current_active = @status != "expired"
         - current_classes = "px-4 py-2 text-sm font-semibold border border-gray-300 rounded-l-md " + (current_active ? "bg-gray-900 text-white" : "bg-white text-gray-700 hover:bg-gray-50")
