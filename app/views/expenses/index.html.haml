@@ -36,8 +36,8 @@
           .lg:col-span-2
             %h2.text-lg.font-semibold.mb-4 Expense List
             .overflow-x-auto
-              %table.min-w-full.border.border-gray-200.bg-white
-                %thead.bg-gray-100
+              %table.min-w-full.border.border-emerald-100.bg-emerald-50
+                %thead.bg-emerald-100
                   %tr
                     %th.px-4.py-2.text-left.text-sm.font-semibold.text-gray-700 Name
                     %th.px-4.py-2.text-left.text-sm.font-semibold.text-gray-700 Source
@@ -46,7 +46,7 @@
                     %th.px-4.py-2.text-left.text-sm.font-semibold.text-gray-700 Method
                     %th.px-4.py-2.text-right.text-sm.font-semibold.text-gray-700 Amount
                     %th.px-4.py-2.text-right.text-sm.font-semibold.text-gray-700
-                %tbody.divide-y.divide-gray-200
+                %tbody.divide-y.divide-emerald-100
                   - if @expenses.any?
                     - @expenses.each do |expense|
                       - source_label = expense.source == Expense::SOURCE_DUE ? "Due" : "Manual"

@@ -1,5 +1,5 @@
 - if @list.persisted?
-  %form{ action: list_path(@list), method: "post" }
+  %form.space-y-6{ action: list_path(@list), method: "post" }
     %input{ type: "hidden", name: "_method", value: "patch" }
 
     - if @list.errors.any?
@@ -7,16 +7,18 @@
 
     = render 'form_field'
 
-    .actions
-      %input.bg-blue-500.hover:bg-blue-700.text-white.font-bold.py-2.px-4.rounded.focus:outline-none.focus:shadow-outline{ type: "submit", value: "Save" }
+    .actions.flex.items-center.justify-end.gap-3
+      = link_to "Cancel", list_path(@list), class: "text-sm font-semibold text-gray-700 hover:text-gray-900"
+      %input.inline-flex.items-center.rounded-md.bg-gray-900.px-4.py-2.text-sm.font-semibold.text-white.shadow-sm.hover:bg-gray-800{ type: "submit", value: "Save changes" }
 
 - else
-  %form{ action: lists_path, method: "post" }
+  %form.space-y-6{ action: lists_path, method: "post" }
 
     - if @list.errors.any?
       = render 'error'
 
     = render 'form_field'
  
-    .actions
-      %input.bg-blue-500.hover:bg-blue-700.text-white.font-bold.py-2.px-4.rounded.focus:outline-none.focus:shadow-outline{ type: "submit", value: "Save" }
+    .actions.flex.items-center.justify-end.gap-3
+      = link_to "Cancel", lists_path, class: "text-sm font-semibold text-gray-700 hover:text-gray-900"
+      %input.inline-flex.items-center.rounded-md.bg-gray-900.px-4.py-2.text-sm.font-semibold.text-white.shadow-sm.hover:bg-gray-800{ type: "submit", value: "Create list" }

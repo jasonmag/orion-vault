@@ -31,19 +31,19 @@
               - lists = @lists_by_frequency[frequency] || []
               - label = frequency == "unscheduled" ? "Unscheduled" : frequency.capitalize.gsub("_", " ")
               %section.mb-10{ id: "frequency-panel-#{frequency}", role: "tabpanel", class: (index.zero? ? nil : "hidden"), data: { frequency_tabs_target: "panel", frequency: frequency } }
-                .rounded-xl.border.border-gray-200.bg-white.shadow-sm
-                  .flex.items-center.justify-between.border-b.border-gray-100.px-5.py-4
+                .rounded-xl.border.border-emerald-100.bg-emerald-50.shadow-sm
+                  .flex.items-center.justify-between.border-b.border-emerald-100.px-5.py-4
                     %h2.text-lg.font-semibold.text-gray-900= label
                   .overflow-x-auto
-                    %table.min-w-full.divide-y.divide-gray-200.bg-white
-                      %thead.bg-gray-50
+                    %table.min-w-full.divide-y.divide-emerald-100.bg-emerald-50
+                      %thead.bg-emerald-100
                         %tr
                           %th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Name
                           %th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Frequency
                           %th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Effective Dates
                           %th.px-4.py-3.text-right.text-sm.font-semibold.text-gray-700 Price
                           %th.px-4.py-3.text-left.text-sm.font-semibold.text-gray-700 Status
-                      %tbody.divide-y.divide-gray-100
+                      %tbody.divide-y.divide-emerald-100
                         - lists.each do |list|
                           - frequency_label = list.payment_schedule&.human_readable_frequency || "Unscheduled"
                           - start_date = list.effective_start_date&.strftime("%b %d, %Y") || "N/A"

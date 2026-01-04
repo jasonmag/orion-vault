@@ -13,4 +13,11 @@ export PORT="${PORT:-3000}"
 export RUBY_DEBUG_OPEN="true"
 export RUBY_DEBUG_LAZY="true"
 
+# Rebuild assets when RECACHE_ASSETS=1 to avoid stale CSS/JS.
+if [ "${RECACHE_ASSETS:-0}" = "1" ]; then
+  echo "Clearing and precompiling assets..."
+  bin/rails assets:clobber
+  bin/rails assets:precompile
+fi
+
 exec foreman start -f Procfile.dev "$@"
