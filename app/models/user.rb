@@ -3,7 +3,9 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :lockable,
-         :omniauthable, omniauth_providers: [ :google_oauth2 ]
+         :jwt_authenticatable, :omniauthable,
+         omniauth_providers: [ :google_oauth2 ],
+         jwt_revocation_strategy: JwtDenylist
 
   has_one :user_setting, dependent: :destroy
   accepts_nested_attributes_for :user_setting

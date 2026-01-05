@@ -1,0 +1,748 @@
+openapi: 3.0.1
+info:
+  title: NexDue API
+  version: v1
+  description: JSON API for NexDue mobile and web clients.
+servers:
+  - url: /api/v1
+tags:
+  - name: Auth
+  - name: Lists
+  - name: Expenses
+  - name: UserSettings
+  - name: Insights
+  - name: CheckListHistories
+paths:
+  /auth/sign_up:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/sign_in:
+    post:
+      tags: [Auth]
+      summary: Sign in and receive a JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignInRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/sign_out:
+    delete:
+      tags: [Auth]
+      summary: Sign out and revoke JWT
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Signed out
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /lists:
+    get:
+      tags: [Lists]
+      summary: List due items within date range
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: start_date
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: end_date
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListIndexResponse"
+    post:
+      tags: [Lists]
+      summary: Create a list
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListResponse"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /lists/{id}:
+    get:
+      tags: [Lists]
+      summary: Get list details
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: start_date
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: end_date
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      tags: [Lists]
+      summary: Update a list
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListCreateRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListResponse"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      tags: [Lists]
+      summary: Soft delete a list
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+  /lists/frequency:
+    get:
+      tags: [Lists]
+      summary: Group lists by frequency
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [current, expired]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListFrequencyResponse"
+  /lists/{list_id}/check_list_histories:
+    post:
+      tags: [CheckListHistories]
+      summary: Check or uncheck a due date
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: list_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckListHistoryRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckListHistoryResponse"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /expenses:
+    get:
+      tags: [Expenses]
+      summary: List expenses
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: per_page
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpenseIndexResponse"
+    post:
+      tags: [Expenses]
+      summary: Create an expense
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExpenseCreateRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpenseResponse"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /expenses/{id}:
+    patch:
+      tags: [Expenses]
+      summary: Update an expense
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExpenseCreateRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpenseResponse"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      tags: [Expenses]
+      summary: Delete an expense
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+  /user_setting:
+    get:
+      tags: [UserSettings]
+      summary: Get user settings
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSettingResponse"
+    patch:
+      tags: [UserSettings]
+      summary: Update user settings
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSettingRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSettingResponse"
+        "422":
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /insights:
+    get:
+      tags: [Insights]
+      summary: Get spending insights
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsightsResponse"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    SignUpRequest:
+      type: object
+      required: [user]
+      properties:
+        user:
+          type: object
+          required: [email, password, password_confirmation]
+          properties:
+            email:
+              type: string
+              format: email
+            password:
+              type: string
+            password_confirmation:
+              type: string
+    SignInRequest:
+      type: object
+      required: [user]
+      properties:
+        user:
+          type: object
+          required: [email, password]
+          properties:
+            email:
+              type: string
+              format: email
+            password:
+              type: string
+    AuthResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            user:
+              $ref: "#/components/schemas/User"
+            token:
+              type: string
+    ListCreateRequest:
+      type: object
+      required: [list]
+      properties:
+        list:
+          type: object
+          required: [name, price, effective_start_date, payment_schedule_attributes]
+          properties:
+            name:
+              type: string
+            price:
+              type: number
+              format: float
+            description:
+              type: string
+            effective_start_date:
+              type: string
+              format: date
+            effective_end_date:
+              type: string
+              format: date
+            payment_schedule_attributes:
+              $ref: "#/components/schemas/PaymentSchedule"
+    ListResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/List"
+    ListIndexResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ListEntry"
+        meta:
+          type: object
+          properties:
+            start_date:
+              type: string
+              format: date
+            end_date:
+              type: string
+              format: date
+    ListFrequencyResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: "#/components/schemas/List"
+        meta:
+          type: object
+          properties:
+            status:
+              type: string
+    CheckListHistoryRequest:
+      type: object
+      required: [due_date, checked]
+      properties:
+        due_date:
+          type: string
+          format: date
+        checked:
+          type: boolean
+    CheckListHistoryResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+            list_id:
+              type: integer
+            due_date:
+              type: string
+              format: date
+            checked:
+              type: boolean
+    ExpenseCreateRequest:
+      type: object
+      required: [expense]
+      properties:
+        expense:
+          type: object
+          required: [name, amount, paid_at]
+          properties:
+            name:
+              type: string
+            amount:
+              type: number
+              format: float
+            paid_at:
+              type: string
+              format: date
+            payment_method:
+              type: string
+            list_id:
+              type: integer
+    ExpenseResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Expense"
+    ExpenseIndexResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Expense"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+    UserSettingRequest:
+      type: object
+      required: [user_setting]
+      properties:
+        user_setting:
+          type: object
+          properties:
+            default_date_range_list_display:
+              type: string
+            default_currency:
+              type: string
+            notification_lead_time:
+              type: integer
+    UserSettingResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/UserSetting"
+    InsightsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/InsightRow"
+        meta:
+          $ref: "#/components/schemas/InsightsMeta"
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        per_page:
+          type: integer
+        total:
+          type: integer
+        total_pages:
+          type: integer
+    InsightsMeta:
+      type: object
+      properties:
+        max_spend:
+          type: number
+        max_cash_in:
+          type: number
+        total_spend:
+          type: number
+        total_cash_in:
+          type: number
+        net_total:
+          type: number
+        due_spend:
+          type: number
+        manual_spend:
+          type: number
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+    UserSetting:
+      type: object
+      properties:
+        id:
+          type: integer
+        default_date_range_list_display:
+          type: string
+        default_currency:
+          type: string
+        notification_lead_time:
+          type: integer
+    PaymentSchedule:
+      type: object
+      required: [frequency, notification_lead_time]
+      properties:
+        id:
+          type: integer
+        frequency:
+          type: string
+          enum: [monthly, weekly, bi-weekly, yearly, once]
+        day_of_month:
+          type: integer
+        day_of_week:
+          type: integer
+        month_of_year:
+          type: integer
+        notification_lead_time:
+          type: integer
+    ListEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        description:
+          type: string
+        effective_start_date:
+          type: string
+          format: date
+        effective_end_date:
+          type: string
+          format: date
+        payment_schedule:
+          $ref: "#/components/schemas/PaymentSchedule"
+        due_date:
+          type: string
+          format: date
+        checked:
+          type: boolean
+    List:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        description:
+          type: string
+        effective_start_date:
+          type: string
+          format: date
+        effective_end_date:
+          type: string
+          format: date
+        payment_schedule:
+          $ref: "#/components/schemas/PaymentSchedule"
+        due_dates:
+          type: array
+          items:
+            type: object
+            properties:
+              due_date:
+                type: string
+                format: date
+              checked:
+                type: boolean
+    Expense:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        amount:
+          type: number
+          format: float
+        paid_at:
+          type: string
+          format: date
+        payment_method:
+          type: string
+        source:
+          type: string
+        due_date:
+          type: string
+          format: date
+        list:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+    InsightRow:
+      type: object
+      properties:
+        month:
+          type: string
+        due:
+          type: number
+        manual:
+          type: number
+        cash_in:
+          type: number
+        total_spend:
+          type: number
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string

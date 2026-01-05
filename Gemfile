@@ -86,3 +86,9 @@ gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
 gem "rack-attack"
+
+gem "devise-jwt"
+gem "rack-cors"
+gem "rswag-api"
+gem "rswag-ui"
+gem "rswag-specs", group: [:development, :test]

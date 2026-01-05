@@ -43,4 +43,26 @@ Rails.application.routes.draw do
   resource :user_setting, only: [ :show, :edit ] do
     post :update, on: :collection
   end
+
+  namespace :api do
+    namespace :v1, defaults: { format: :json } do
+      devise_for :users, path: "auth", controllers: {
+        sessions: "api/v1/auth/sessions",
+        registrations: "api/v1/auth/registrations"
+      }, path_names: { sign_in: "sign_in", sign_out: "sign_out", registration: "sign_up" },
+      skip: [ :passwords, :confirmations, :unlock, :omniauth_callbacks ]
+
+      resources :lists do
+        get "frequency", on: :collection
+        resources :check_list_histories, only: [ :create ]
+      end
+
+      resources :expenses, only: [ :index, :create, :update, :destroy ]
+      resource :user_setting, only: [ :show, :update ]
+      get "insights" => "insights#index"
+    end
+  end
+
+  mount Rswag::Api::Engine => "/api-docs"
+  mount Rswag::Ui::Engine => "/api-docs"
 end
