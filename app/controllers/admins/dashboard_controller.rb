@@ -48,6 +48,9 @@ class Admins::DashboardController < ApplicationController
 
   def csv_escape(value)
     sanitized = formatted_value(value)
+    if sanitized.match?(/\A[=+\-@]/)
+      sanitized = "'#{sanitized}"
+    end
     needs_quotes = sanitized.include?("\"") || sanitized.include?(",") || sanitized.include?("\n")
     sanitized = sanitized.gsub("\"", '""')
     needs_quotes ? "\"#{sanitized}\"" : sanitized

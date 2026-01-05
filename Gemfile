@@ -85,3 +85,5 @@ gem "thruster", require: false
 gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
+gem "rack-attack"
+

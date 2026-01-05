@@ -2,7 +2,7 @@ class CheckListHistoriesController < ApplicationController
   before_action :authenticate_user!
 
   def create
-    list = List.find(params[:list_id])
+    list = current_user.list.find(params[:list_id])
     due_date = Date.parse(params[:due_date].to_s) rescue nil
     checked = ActiveModel::Type::Boolean.new.cast(params[:checked])
 
