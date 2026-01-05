@@ -20,7 +20,7 @@ servers:
 proxy:
   ssl: true
   hosts: 
-   - nexduev2.jasonmag.com
+   - nexdue.jasonmag.com
   app_port: 3000
 
 # Credentials for your image host.
