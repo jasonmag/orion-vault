@@ -15,6 +15,6 @@ class Rack::Attack
   end
 
   self.throttled_responder = lambda do |_env|
-    [429, { "Content-Type" => "text/plain" }, ["Too many attempts. Try again later."]]
+    [ 429, { "Content-Type" => "text/plain" }, [ "Too many attempts. Try again later." ] ]
   end
 end

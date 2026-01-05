@@ -1,7 +1,7 @@
 class Expense < ApplicationRecord
   SOURCE_DUE = "due"
   SOURCE_MANUAL = "manual"
-  SOURCES = [SOURCE_DUE, SOURCE_MANUAL].freeze
+  SOURCES = [ SOURCE_DUE, SOURCE_MANUAL ].freeze
 
   belongs_to :user
   belongs_to :list, optional: true
