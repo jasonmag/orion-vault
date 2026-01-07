@@ -16,17 +16,29 @@
 
             .grid.grid-cols-1.gap-6.sm:grid-cols-2
               .space-y-2
-                %p.text-sm.font-semibold.text-gray-700 Name
-                %p.text-sm.text-gray-900= @expense.name
+                - if @expense.source == Expense::SOURCE_MANUAL
+                  = f.label :name, class: "block text-sm font-semibold text-gray-700"
+                  = f.text_field :name, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+                - else
+                  %p.text-sm.font-semibold.text-gray-700 Name
+                  %p.text-sm.text-gray-900= @expense.name
 
               .space-y-2
-                %p.text-sm.font-semibold.text-gray-700 Amount
-                %p.text-sm.text-gray-900
-                  = Money.new(@expense.amount * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+                - if @expense.source == Expense::SOURCE_MANUAL
+                  = f.label :amount, class: "block text-sm font-semibold text-gray-700"
+                  = f.number_field :amount, step: "0.01", class: "w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+                - else
+                  %p.text-sm.font-semibold.text-gray-700 Amount
+                  %p.text-sm.text-gray-900
+                    = Money.new(@expense.amount * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
 
               .space-y-2
-                %p.text-sm.font-semibold.text-gray-700 Paid on
-                %p.text-sm.text-gray-900= @expense.paid_at&.strftime("%b %d, %Y")
+                - if @expense.source == Expense::SOURCE_MANUAL
+                  = f.label :paid_at, "Paid on", class: "block text-sm font-semibold text-gray-700"
+                  = f.date_field :paid_at, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+                - else
+                  %p.text-sm.font-semibold.text-gray-700 Paid on
+                  %p.text-sm.text-gray-900= @expense.paid_at&.strftime("%b %d, %Y")
 
               .space-y-2
                 = f.label :payment_method, class: "block text-sm font-semibold text-gray-700"

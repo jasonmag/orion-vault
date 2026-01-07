@@ -31,7 +31,7 @@ class ExpensesController < ApplicationController
   def update
     expense = current_user.expenses.find(params[:id])
 
-    if expense.update(expense_update_params)
+    if expense.update(expense_update_params(expense))
       redirect_to expenses_path, notice: "Payment method updated."
     else
       @expense = Expense.new
@@ -46,8 +46,13 @@ class ExpensesController < ApplicationController
     params.require(:expense).permit(:name, :amount, :paid_at, :payment_method)
   end
 
-  def expense_update_params
-    params.require(:expense).permit(:payment_method)
+  def expense_update_params(expense)
+    permitted = [ :payment_method ]
+    if expense.source == Expense::SOURCE_MANUAL
+      permitted += [ :name, :amount, :paid_at ]
+    end
+
+    params.require(:expense).permit(*permitted)
   end
 
   def load_expenses
