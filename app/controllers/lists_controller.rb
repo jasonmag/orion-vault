@@ -98,6 +98,6 @@ class ListsController < ApplicationController
     def list_params
       params.require(:list)
         .permit(:name, :price, :description, :effective_start_date, :effective_end_date,
-              payment_schedule_attributes: [ :frequency, :day_of_month, :day_of_week, :month_of_year, :notification_lead_time ])
+              payment_schedule_attributes: [ :frequency, :day_of_month, :day_of_month_second, :day_of_week, :month_of_year, :notification_lead_time ])
     end
 end

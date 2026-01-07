@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["dayOfMonthField", "dayOfWeekField", "monthOfYearField", "frequencyFields"]
+  static targets = ["dayOfMonthField", "dayOfWeekField", "monthOfYearField"]
 
   connect() {
     // On page load, set up the correct fields based on the existing frequency value
@@ -9,10 +9,7 @@ export default class extends Controller {
   }
 
   // This method handles when the frequency dropdown changes
-  setFrequency(event) {
-    const selectedFrequency = event.target.value;
-    console.log(`Frequency selected: ${selectedFrequency}`);
-    
+  setFrequency() {
     // Perform any action based on the selected frequency (e.g., setting values)
     // Here, we'll just toggle the fields based on the new selection
     this.toggleFields();
@@ -22,36 +19,50 @@ export default class extends Controller {
     const frequency = this.element.querySelector('[name="list[payment_schedule_attributes][frequency]"]').value;
 
     // Show/hide fields based on the selected frequency
-    if (frequency === "monthly") {
-      this.show(this.dayOfMonthFieldTarget);
-      this.hide(this.dayOfWeekFieldTarget);
-      this.hide(this.monthOfYearFieldTarget);
-    } else if (frequency === "weekly" || frequency === "bi-weekly") {
-      this.hide(this.dayOfMonthFieldTarget);
-      this.show(this.dayOfWeekFieldTarget);
-      this.hide(this.monthOfYearFieldTarget);
-    } else if (frequency === "yearly") {
-      this.show(this.dayOfMonthFieldTarget);
-      this.hide(this.dayOfWeekFieldTarget);
-      this.show(this.monthOfYearFieldTarget);
-    } else if (frequency === "once") {
-      // Hide all recurrence-related fields for one-time payments
-      this.hide(this.dayOfMonthFieldTarget);
-      this.hide(this.dayOfWeekFieldTarget);
-      this.hide(this.monthOfYearFieldTarget);
-    } else {
-      // Default case: hide all frequency-related fields if frequency is empty
-      this.hide(this.dayOfMonthFieldTarget);
-      this.hide(this.dayOfWeekFieldTarget);
-      this.hide(this.monthOfYearFieldTarget);
+    const requiresDayOfMonth = frequency === "monthly" || frequency === "yearly" || frequency === "semi-monthly";
+    const requiresDayOfWeek = frequency === "weekly" || frequency === "bi-weekly";
+    const requiresMonthOfYear = frequency === "yearly";
+
+    this.setFieldState(this.dayOfMonthFieldTarget, requiresDayOfMonth);
+    this.setFieldState(this.dayOfWeekFieldTarget, requiresDayOfWeek);
+    this.setFieldState(this.monthOfYearFieldTarget, requiresMonthOfYear);
+    this.setDayOfMonthOptions(frequency);
+  }
+
+  setFieldState(target, required) {
+    target.style.display = required ? "block" : "none";
+    const input = target.querySelector("input, select, textarea");
+    if (!input) {
+      return;
     }
+
+    input.required = required;
   }
 
-  show(target) {
-    target.closest(".field").style.display = "block";
-  }
+  setDayOfMonthOptions(frequency) {
+    const input = this.dayOfMonthFieldTarget.querySelector("select");
+    if (!input) {
+      return;
+    }
 
-  hide(target) {
-    target.closest(".field").style.display = "none";
+    const limitToFirstHalf = frequency === "semi-monthly";
+    Array.from(input.options).forEach((option) => {
+      if (!option.value) {
+        return;
+      }
+
+      const day = Number(option.value);
+      if (Number.isNaN(day)) {
+        return;
+      }
+
+      const shouldHide = limitToFirstHalf && day > 15;
+      option.disabled = shouldHide;
+      option.hidden = shouldHide;
+    });
+
+    if (limitToFirstHalf && Number(input.value) > 15) {
+      input.value = "";
+    }
   }
 }

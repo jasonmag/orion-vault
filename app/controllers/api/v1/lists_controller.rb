@@ -92,7 +92,7 @@ module Api
       def list_params
         params.require(:list)
           .permit(:name, :price, :description, :effective_start_date, :effective_end_date,
-            payment_schedule_attributes: [ :id, :frequency, :day_of_month, :day_of_week, :month_of_year, :notification_lead_time ])
+            payment_schedule_attributes: [ :id, :frequency, :day_of_month, :day_of_month_second, :day_of_week, :month_of_year, :notification_lead_time ])
       end
 
       def list_payload(list, due_date: nil, include_due_dates: false)
@@ -130,6 +130,7 @@ module Api
           id: schedule.id,
           frequency: schedule.frequency,
           day_of_month: schedule.day_of_month,
+          day_of_month_second: schedule.day_of_month_second,
           day_of_week: schedule.day_of_week,
           month_of_year: schedule.month_of_year,
           notification_lead_time: schedule.notification_lead_time

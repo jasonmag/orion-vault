@@ -1,8 +1,9 @@
 puts "Seeding Lists and Payment Schedules..."
 
-frequencies = %w[weekly bi-weekly monthly yearly once]
+frequencies = %w[weekly bi-weekly semi-monthly monthly yearly once]
 day_of_week_range = 0..6  # 0 = Sunday ... 6 = Saturday
 day_of_month_range = 1..28
+day_of_month_first_half_range = 1..15
 month_of_year_range = 1..12
 
 User.find_each do |user|
@@ -19,7 +20,7 @@ User.find_each do |user|
     )
 
     # Select frequency either randomly or cycle through to ensure all are covered
-    frequency = frequencies[i % frequencies.size] # ensures all 5 get used
+    frequency = frequencies[i % frequencies.size]
 
     payment_schedule = PaymentSchedule.new(
       list_id: list.id,
@@ -33,6 +34,8 @@ User.find_each do |user|
     case frequency
     when "weekly", "bi-weekly"
       payment_schedule.day_of_week = rand(day_of_week_range)
+    when "semi-monthly"
+      payment_schedule.day_of_month = rand(day_of_month_first_half_range)
     when "monthly"
       payment_schedule.day_of_month = rand(day_of_month_range)
     when "yearly"

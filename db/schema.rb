@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_05_160000) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_06_000000) do
   create_table "admins", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -84,6 +84,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_05_160000) do
     t.integer "notification_lead_time", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "day_of_month_second"
     t.index ["list_id"], name: "index_payment_schedules_on_list_id"
   end
 

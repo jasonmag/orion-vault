@@ -8,6 +8,8 @@ module DueDateable
       case payment_schedule.frequency
       when PaymentSchedule::FREQUENCY_MONTHLY
         calculate_monthly_due_dates(start_date, end_date)
+      when PaymentSchedule::FREQUENCY_SEMI_MONTHLY
+        calculate_semi_monthly_due_dates(start_date, end_date)
       when PaymentSchedule::FREQUENCY_WEEKLY
         calculate_weekly_due_dates(start_date, end_date)
       when PaymentSchedule::FREQUENCY_BI_WEEKLY
@@ -51,6 +53,28 @@ module DueDateable
       end
 
       due_dates
+    end
+
+    # Semi-monthly due dates within the given range
+    def calculate_semi_monthly_due_dates(start_date, end_date)
+      due_dates = []
+      current_date = effective_start_date || Date.today
+      day_of_month = payment_schedule.day_of_month
+      return [] unless day_of_month
+
+      days = [ day_of_month, day_of_month + 15 ].uniq
+
+      while current_date <= end_date
+        last_day = Date.civil(current_date.year, current_date.month, -1).day
+        days.each do |day|
+          adjusted_day = [ day, last_day ].min
+          due_date = Date.new(current_date.year, current_date.month, adjusted_day)
+          due_dates << due_date if due_date.between?(start_date, end_date)
+        end
+        current_date = current_date.next_month
+      end
+
+      due_dates.uniq.sort
     end
 
     # Bi-weekly due dates within the given range

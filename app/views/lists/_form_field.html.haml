@@ -44,15 +44,22 @@
 
         .space-y-2{ style: "display:none;", data: { effective_date_target: "dayOfMonthField" } }
           %label.block.text-sm.font-semibold.text-gray-700{ for: "payment_schedule_day_of_month" }
-            Day of month
+            Day of month (1-15 for semi-monthly)
             %span.text-red-500 *
-          %input.w-full.rounded-md.border.border-gray-300.px-3.py-2.text-gray-900.shadow-sm.focus:border-gray-900.focus:ring-1.focus:ring-gray-900{ type: "number", name: "list[payment_schedule_attributes][day_of_month]", id: "payment_schedule_day_of_month", value: @list.payment_schedule.day_of_month }
+          %select.w-full.rounded-md.border.border-gray-300.bg-white.px-3.py-2.text-gray-900.shadow-sm.focus:border-gray-900.focus:ring-1.focus:ring-gray-900{ name: "list[payment_schedule_attributes][day_of_month]", id: "payment_schedule_day_of_month" }
+            %option{ value: "", selected: @list.payment_schedule.day_of_month.blank? } Select day
+            - (1..31).each do |day|
+              %option{ value: day, selected: @list.payment_schedule.day_of_month == day }= day.ordinalize
 
         .space-y-2{ style: "display:none;", data: { effective_date_target: "dayOfWeekField" } }
           %label.block.text-sm.font-semibold.text-gray-700{ for: "payment_schedule_day_of_week" }
-            Day of week
+            Day of week (for weekly/bi-weekly)
             %span.text-red-500 *
-          %input.w-full.rounded-md.border.border-gray-300.px-3.py-2.text-gray-900.shadow-sm.focus:border-gray-900.focus:ring-1.focus:ring-gray-900{ type: "number", name: "list[payment_schedule_attributes][day_of_week]", id: "payment_schedule_day_of_week", value: @list.payment_schedule.day_of_week }
+          %select.w-full.rounded-md.border.border-gray-300.bg-white.px-3.py-2.text-gray-900.shadow-sm.focus:border-gray-900.focus:ring-1.focus:ring-gray-900{ name: "list[payment_schedule_attributes][day_of_week]", id: "payment_schedule_day_of_week" }
+            %option{ value: "", selected: @list.payment_schedule.day_of_week.blank? } Select day
+            - days = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ]
+            - days.each_with_index do |day, index|
+              %option{ value: index, selected: @list.payment_schedule.day_of_week == index }= day
 
         .space-y-2{ style: "display:none;", data: { effective_date_target: "monthOfYearField" } }
           %label.block.text-sm.font-semibold.text-gray-700{ for: "payment_schedule_month_of_year" }

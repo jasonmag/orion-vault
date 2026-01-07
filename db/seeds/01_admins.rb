@@ -1,7 +1,6 @@
 puts "Seeding Admins..."
 
-Admin.create!(
-  email: "admin@example.com",
-  password: "password",
-  password_confirmation: "password"
-)
+admin = Admin.find_or_initialize_by(email: "admin@example.com")
+admin.password = "password12345"
+admin.password_confirmation = "password12345"
+admin.save!

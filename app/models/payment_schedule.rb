@@ -3,26 +3,43 @@ class PaymentSchedule < ApplicationRecord
 
   # Define constants for the frequency strings
   FREQUENCY_MONTHLY = "monthly"
+  FREQUENCY_SEMI_MONTHLY = "semi-monthly"
   FREQUENCY_WEEKLY = "weekly"
   FREQUENCY_BI_WEEKLY = "bi-weekly"
   FREQUENCY_YEARLY = "yearly"
   FREQUENCY_ONCE = "once"
 
   # Define a frozen array of frequency constants for validation
-  FREQUENCIES = [ FREQUENCY_MONTHLY, FREQUENCY_WEEKLY, FREQUENCY_BI_WEEKLY, FREQUENCY_YEARLY, FREQUENCY_ONCE ].freeze
+  FREQUENCIES = [
+    FREQUENCY_MONTHLY,
+    FREQUENCY_SEMI_MONTHLY,
+    FREQUENCY_WEEKLY,
+    FREQUENCY_BI_WEEKLY,
+    FREQUENCY_YEARLY,
+    FREQUENCY_ONCE
+  ].freeze
 
   # Validation for frequency
   validates :frequency, presence: true, inclusion: { in: FREQUENCIES }
   validates :notification_lead_time, presence: true
 
   # Conditional validations
-  validates :day_of_month, presence: true, if: :monthly?
+  validates :day_of_month, presence: true, if: :monthly_or_semi_monthly?
+  validates :day_of_month, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 15 }, if: :semi_monthly?
   validates :day_of_week, presence: true, if: :weekly_or_biweekly?
   validates :month_of_year, presence: true, if: :yearly?
 
   # Methods to check the frequency type using constants
   def monthly?
     frequency == FREQUENCY_MONTHLY
+  end
+
+  def semi_monthly?
+    frequency == FREQUENCY_SEMI_MONTHLY
+  end
+
+  def monthly_or_semi_monthly?
+    monthly? || semi_monthly?
   end
 
   def weekly?
@@ -50,6 +67,8 @@ class PaymentSchedule < ApplicationRecord
     case frequency
     when FREQUENCY_MONTHLY
       FREQUENCY_MONTHLY.capitalize
+    when FREQUENCY_SEMI_MONTHLY
+      "Semi-monthly"
     when FREQUENCY_WEEKLY
       FREQUENCY_WEEKLY.capitalize
     when FREQUENCY_BI_WEEKLY
