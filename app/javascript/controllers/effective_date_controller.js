@@ -30,7 +30,8 @@ export default class extends Controller {
   }
 
   setFieldState(target, required) {
-    target.style.display = required ? "block" : "none";
+    // CSP blocks inline styles in production, so toggle Tailwind's hidden class instead.
+    target.classList.toggle("hidden", !required);
     const input = target.querySelector("input, select, textarea");
     if (!input) {
       return;

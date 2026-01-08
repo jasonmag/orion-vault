@@ -42,7 +42,7 @@
             - PaymentSchedule::FREQUENCIES.each do |frequency|
               %option{ value: frequency, selected: @list.payment_schedule.frequency == frequency }= PaymentSchedule::FREQUENCIES.find { |f| f == frequency }.capitalize.gsub('_', ' ')
 
-        .space-y-2{ style: "display:none;", data: { effective_date_target: "dayOfMonthField" } }
+        .space-y-2.hidden{ data: { effective_date_target: "dayOfMonthField" } }
           %label.block.text-sm.font-semibold.text-gray-700{ for: "payment_schedule_day_of_month" }
             Day of month (1-15 for semi-monthly)
             %span.text-red-500 *
@@ -51,7 +51,7 @@
             - (1..31).each do |day|
               %option{ value: day, selected: @list.payment_schedule.day_of_month == day }= day.ordinalize
 
-        .space-y-2{ style: "display:none;", data: { effective_date_target: "dayOfWeekField" } }
+        .space-y-2.hidden{ data: { effective_date_target: "dayOfWeekField" } }
           %label.block.text-sm.font-semibold.text-gray-700{ for: "payment_schedule_day_of_week" }
             Day of week (for weekly/bi-weekly)
             %span.text-red-500 *
@@ -61,7 +61,7 @@
             - days.each_with_index do |day, index|
               %option{ value: index, selected: @list.payment_schedule.day_of_week == index }= day
 
-        .space-y-2{ style: "display:none;", data: { effective_date_target: "monthOfYearField" } }
+        .space-y-2.hidden{ data: { effective_date_target: "monthOfYearField" } }
           %label.block.text-sm.font-semibold.text-gray-700{ for: "payment_schedule_month_of_year" }
             Month of year
             %span.text-red-500 *
