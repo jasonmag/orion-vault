@@ -91,4 +91,4 @@ gem "devise-jwt"
 gem "rack-cors"
 gem "rswag-api"
 gem "rswag-ui"
-gem "rswag-specs", group: [:development, :test]
+gem "rswag-specs", group: [ :development, :test ]
