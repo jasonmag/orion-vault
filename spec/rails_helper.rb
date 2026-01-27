@@ -9,6 +9,8 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # return unless Rails.env.test?
 require 'rspec/rails'
 require 'devise'
+require 'capybara/rspec'
+require 'warden/test/helpers'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -68,4 +70,22 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include Devise::Test::IntegrationHelpers, type: :request
+  config.include Warden::Test::Helpers, type: :system
+  config.include ActiveSupport::Testing::TimeHelpers
+
+  config.before(:suite) do
+    Warden.test_mode!
+  end
+
+  config.after(:each, type: :system) do
+    Warden.test_reset!
+  end
+
+  config.before(:each, type: :system) do
+    if ENV["RUN_SYSTEM_SPECS"] == "1"
+      driven_by :selenium_chrome_headless
+    else
+      driven_by :rack_test
+    end
+  end
 end

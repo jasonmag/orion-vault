@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "Admin::Dashboard", type: :request do
-  let!(:admin) { Admin.create!(email: "admin@example.com", password: "password123", password_confirmation: "password123") }
-  let!(:user) { User.create!(email: "user@example.com", password: "password123", password_confirmation: "password123") }
+  let!(:admin) { Admin.create!(email: "admin@example.com", password: "password123456", password_confirmation: "password123456") }
+  let!(:user) { User.create!(email: "user@example.com", password: "password123456", password_confirmation: "password123456") }
   let!(:list) { user.list.create!(name: "Water Bill", price: 12.50, effective_start_date: Date.current) }
   let!(:payment_schedule) do
     PaymentSchedule.create!(

@@ -4,8 +4,8 @@
       - list = entry[:list]
       - due_date = entry[:due_date]
       - checked = list.checked_status_for(current_user, due_date).to_s # Get the checked status for the current user in strings
-      %li.flex.items-center.justify-between.mb-4{ "data-check-target" => "listItem", "data-list-id" => list.id }
-        .flex.items-center{ "data-controller" => "check" }
+      %li{ class: "grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 mb-4", "data-check-target" => "listItem", "data-list-id" => list.id }
+        .flex.items-center.min-w-0{ "data-controller" => "check" }
           %span{ "data-action" => "click->check#toggle", "data-check-target" => "icon", "data-checked" => checked }
             - if checked
               %svg{ xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-black", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }
@@ -13,11 +13,11 @@
             - else
               %svg{ xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-gray-600", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }
                 %path{ "stroke-linecap" => "round", "stroke-linejoin" => "round", "stroke-width" => "2", "d" => "M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" } # Unchecked icon (plus sign)
-          %label.ml-2{ for: "list_#{list.id}" }
-            = link_to list_path(list), class: 'block' do
-              %span.text-gray-900.font-medium= Money.new(list.price * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
-              %span.text-gray-700= " for "
-              %span.font-medium.text-gray-900= truncate(list.name, length: 15)
+          %label.ml-2.min-w-0{ for: "list_#{list.id}" }
+            = link_to list_path(list), class: 'flex items-center gap-1 min-w-0' do
+              %span.text-gray-900.font-medium.shrink-0= Money.new(list.price * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+              %span.text-gray-700.shrink-0= " for "
+              %span.font-medium.text-gray-900.truncate= list.name
         %span.text-gray-700.text-right{ "data-due-date" => due_date.to_s }
           - if due_date.present?
             = due_date.strftime('%b %d')

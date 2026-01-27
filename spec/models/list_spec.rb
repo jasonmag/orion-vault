@@ -3,7 +3,7 @@ require 'rails_helper'
 
 RSpec.describe List, type: :model do
   context 'when creating a new list' do
-    let(:user) { User.create!(email: "test@example.com", password: "password123") }
+    let(:user) { User.create!(email: "test@example.com", password: "password123456") }
 
     it 'sets the effective_start_date to today if no date is provided' do
       list = List.create!(name: "Test List", price: 99.99, description: "A test list", user: user)

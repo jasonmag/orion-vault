@@ -8,7 +8,10 @@
             %p.text-sm.text-gray-600 Track recurring payments and mark them done.
           .flex.items-center.gap-3
             = render "lists/add_list"
-            = link_to select_dates_lists_path, class: "text-gray-700 hover:text-gray-900" do
-              = render "svg/gear"
+            %details.relative
+              %summary.list-none.cursor-pointer.rounded-md.p-1.text-gray-700.hover:text-gray-900.hover:bg-emerald-50.focus:outline-none.focus-visible:ring-2.focus-visible:ring-emerald-400
+                = render "svg/gear"
+              .absolute.right-0.mt-2.w-80.rounded-lg.border.border-emerald-100.bg-white.p-4.shadow-lg.z-20
+                = render "layouts/select_dates"
         .rounded-xl.border.border-emerald-100.bg-emerald-50.p-5.shadow-sm
           = render "lists/check_list"

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "UserSettings", type: :request do
-  let!(:user) { User.create!(email: "user@example.com", password: "password123", password_confirmation: "password123") }
+  let!(:user) { User.create!(email: "user@example.com", password: "password123456", password_confirmation: "password123456") }
 
   before { sign_in user, scope: :user }
 
