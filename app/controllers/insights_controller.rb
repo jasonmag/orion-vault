@@ -37,6 +37,7 @@ class InsightsController < ApplicationController
 
     @max_spend = @monthly_rows.map { |row| row[:total_spend] }.max || 0.to_d
     @max_cash_in = @monthly_rows.map { |row| row[:cash_in] }.max || 0.to_d
+    @max_cashflow_value = @monthly_rows.map { |row| [row[:total_spend], row[:cash_in], row[:due]].max }.max || 0.to_d
     @total_spend = @monthly_rows.sum { |row| row[:total_spend] }
     @total_cash_in = @monthly_rows.sum { |row| row[:cash_in] }
     @net_total = @total_cash_in - @total_spend

@@ -24,15 +24,15 @@
         .rounded-xl.border.border-gray-200.bg-white.p-6
           .flex.items-center.justify-between.mb-4
             %div
-              %h2.text-lg.font-semibold Monthly cashflow mix
-              %p.text-sm.text-gray-500 Cash-out vs cash-in, last 6 months
+              %h2.text-lg.font-semibold Monthly cashflow comparison
+              %p.text-sm.text-gray-500 Cash-in vs payments done (due + manual), last 6 months
             .flex.items-center.gap-4.text-sm.text-gray-600
               .flex.items-center.gap-2
                 %span.inline-block.h-3.w-3.rounded-full.bg-emerald-500
-                Due-paid
+                Payments done (due)
               .flex.items-center.gap-2
                 %span.inline-block.h-3.w-3.rounded-full.bg-amber-400
-                Manual
+                Payments done (manual)
               .flex.items-center.gap-2
                 %span.inline-block.h-3.w-3.rounded-full.bg-sky-500
                 Cash-in
@@ -42,18 +42,41 @@
           - else
             .space-y-4
               - @monthly_rows.each do |row|
-                - spend_width = @max_spend.positive? ? ((row[:total_spend].to_f / @max_spend.to_f) * 100).round(2) : 0
-                - cash_in_width = @max_cash_in.positive? ? ((row[:cash_in].to_f / @max_cash_in.to_f) * 100).round(2) : 0
-                - due_width = row[:total_spend].positive? ? ((row[:due].to_f / row[:total_spend].to_f) * 100).round(2) : 0
-                - manual_width = row[:total_spend].positive? ? ((row[:manual].to_f / row[:total_spend].to_f) * 100).round(2) : 0
+                - max_value = @max_cashflow_value.to_f
+                - payable_width = max_value.positive? ? ((row[:total_spend].to_f / max_value) * 100).round(2) : 0
+                - cash_in_width = max_value.positive? ? ((row[:cash_in].to_f / max_value) * 100).round(2) : 0
+                - payment_done_width = max_value.positive? ? ((row[:due].to_f / max_value) * 100).round(2) : 0
+                - payable_width = [payable_width, 100].min
+                - cash_in_width = [cash_in_width, 100].min
+                - payment_done_width = [payment_done_width, 100].min
+                - net = row[:cash_in] - row[:total_spend]
                 .grid.grid-cols-12.items-center.gap-3
                   %div.col-span-3.text-sm.font-semibold.text-gray-700= row[:month]
-                  .col-span-7
-                    .space-y-2
-                      .h-3.rounded-full.bg-gray-100.overflow-hidden{ style: "width: #{spend_width}%" }
-                        .h-3.bg-emerald-500.inline-block{ style: "width: #{due_width}%" }
-                        .h-3.bg-amber-400.inline-block{ style: "width: #{manual_width}%" }
-                      .h-3.rounded-full.bg-sky-100.overflow-hidden{ style: "width: #{cash_in_width}%" }
-                        .h-3.bg-sky-500.inline-block{ style: "width: 100%" }
-                  %div.col-span-2.text-right.text-sm.text-gray-700
-                    = Money.new(row[:total_spend] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+                  .col-span-6
+                    .space-y-3
+                      - payment_done_amount = Money.new(row[:due] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+                      - cash_in_amount = Money.new(row[:cash_in] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+                      - payable_amount = Money.new(row[:total_spend] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+
+                      .relative.group
+                        .h-2.w-full.bg-gray-100.rounded-full.overflow-hidden
+                          .h-2.bg-emerald-500.rounded-full.block{ style: "width: #{payment_done_width}%" }
+                        %div{ class: "absolute -top-9 left-0 hidden group-hover:block rounded-md bg-gray-900 px-2 py-1 text-[11px] text-white shadow-lg whitespace-nowrap" }
+                          = "Payment done · #{payment_done_amount}"
+
+                      .relative.group
+                        .h-2.w-full.bg-gray-100.rounded-full.overflow-hidden
+                          .h-2.bg-sky-500.rounded-full.block{ style: "width: #{cash_in_width}%" }
+                        %div{ class: "absolute -top-9 left-0 hidden group-hover:block rounded-md bg-gray-900 px-2 py-1 text-[11px] text-white shadow-lg whitespace-nowrap" }
+                          = "Cash-in · #{cash_in_amount}"
+
+                      .relative.group
+                        .h-2.w-full.bg-gray-100.rounded-full.overflow-hidden
+                          .h-2.bg-rose-500.rounded-full.block{ style: "width: #{payable_width}%" }
+                        %div{ class: "absolute -top-9 left-0 hidden group-hover:block rounded-md bg-gray-900 px-2 py-1 text-[11px] text-white shadow-lg whitespace-nowrap" }
+                          = "Payable · #{payable_amount}"
+                  .col-span-3.text-right
+                    %div.text-xs.text-gray-500 Net
+                    - net_class = net.negative? ? "text-rose-600" : "text-emerald-600"
+                    %div.text-sm.font-semibold{ class: net_class }
+                      = Money.new(net * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
