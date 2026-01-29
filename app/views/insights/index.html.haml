@@ -40,43 +40,114 @@
           - if @max_spend.zero? && @max_cash_in.zero?
             %p.text-sm.text-gray-600 No cash activity in the last 6 months.
           - else
-            .space-y-4
+            - chart_width = 640
+            - chart_height = 240
+            - padding = 28
+            - max_value = @max_cashflow_value.to_f
+            - x_step = @monthly_rows.size > 1 ? (chart_width - (padding * 2)).fdiv(@monthly_rows.size - 1) : 0
+            - y_for = ->(value) { max_value.zero? ? (chart_height - padding) : (chart_height - padding - ((value.to_f / max_value) * (chart_height - (padding * 2)))).round(2) }
+            - due_coords = @monthly_rows.map.with_index { |row, index| [(padding + (index * x_step)).round(2), y_for.call(row[:due])] }
+            - manual_coords = @monthly_rows.map.with_index { |row, index| [(padding + (index * x_step)).round(2), y_for.call(row[:manual])] }
+            - cash_in_coords = @monthly_rows.map.with_index { |row, index| [(padding + (index * x_step)).round(2), y_for.call(row[:cash_in])] }
+            - due_points = due_coords.map { |point| "#{point[0]},#{point[1]}" }.join(" ")
+            - manual_points = manual_coords.map { |point| "#{point[0]},#{point[1]}" }.join(" ")
+            - cash_in_points = cash_in_coords.map { |point| "#{point[0]},#{point[1]}" }.join(" ")
+            - spline_path = lambda do |points|
+              - next "" if points.empty?
+              - return "M #{points[0][0]},#{points[0][1]}" if points.length == 1
+              - path = +"M #{points[0][0]},#{points[0][1]}"
+              - points.each_with_index do |point, index|
+                - next if index == 0
+                - p0 = points[index - 2] || points[index - 1]
+                - p1 = points[index - 1]
+                - p2 = point
+                - p3 = points[index + 1] || point
+                - c1x = (p1[0] + (p2[0] - p0[0]) / 6.0).round(2)
+                - c1y = (p1[1] + (p2[1] - p0[1]) / 6.0).round(2)
+                - c2x = (p2[0] - (p3[0] - p1[0]) / 6.0).round(2)
+                - c2y = (p2[1] - (p3[1] - p1[1]) / 6.0).round(2)
+                - path << " C #{c1x},#{c1y} #{c2x},#{c2y} #{p2[0]},#{p2[1]}"
+              - path
+            - cash_in_spline = spline_path.call(cash_in_coords)
+            - due_spline = spline_path.call(due_coords)
+            - manual_spline = spline_path.call(manual_coords)
+
+            .space-y-4{ data: { controller: "frequency-tabs" } }
+              .inline-flex.rounded-md.shadow-sm{ role: "tablist" }
+                %button.px-4.py-2.text-sm.font-semibold.border.border-gray-300.rounded-l-md{ type: "button", role: "tab", aria: { selected: "true", controls: "cashflow-panel-line" }, data: { action: "click->frequency-tabs#show", frequency_tabs_target: "tab", frequency_value: "line", active: "true", active_class: "bg-gray-900 text-white border-gray-900", inactive_class: "bg-white text-gray-700 hover:bg-gray-50" } } Line
+                %button.px-4.py-2.text-sm.font-semibold.border.border-gray-300.rounded-r-md.-ml-px{ type: "button", role: "tab", aria: { selected: "false", controls: "cashflow-panel-spline" }, data: { action: "click->frequency-tabs#show", frequency_tabs_target: "tab", frequency_value: "spline", active_class: "bg-gray-900 text-white border-gray-900", inactive_class: "bg-white text-gray-700 hover:bg-gray-50" } } Spline
+
+              %section.rounded-lg.border.border-gray-100.bg-white.p-4{ id: "cashflow-panel-line", role: "tabpanel", data: { frequency_tabs_target: "panel", frequency: "line" } }
+                %svg{ class: "w-full h-64", viewBox: "0 0 #{chart_width} #{chart_height}", role: "img", "aria-label": "Monthly cashflow line chart" }
+                  %defs
+                    %linearGradient{ id: "cash-in-gradient", x1: "0", y1: "0", x2: "0", y2: "1" }
+                      %stop{ offset: "0%", "stop-color": "#0ea5e9", "stop-opacity": "0.25" }
+                      %stop{ offset: "100%", "stop-color": "#0ea5e9", "stop-opacity": "0.02" }
+                  -# Grid lines
+                  - (0..3).each do |index|
+                    - y = padding + ((chart_height - (padding * 2)) * index / 3.0)
+                    %line{ x1: padding, x2: chart_width - padding, y1: y, y2: y, stroke: "#e5e7eb", "stroke-width": "1" }
+                  -# Cash-in area
+                  %path{ d: "M #{cash_in_points} L #{chart_width - padding},#{chart_height - padding} L #{padding},#{chart_height - padding} Z", fill: "url(#cash-in-gradient)" }
+                  %polyline{ points: cash_in_points, fill: "none", stroke: "#0ea5e9", "stroke-width": "2.5" }
+                  %polyline{ points: due_points, fill: "none", stroke: "#10b981", "stroke-width": "2.5" }
+                  %polyline{ points: manual_points, fill: "none", stroke: "#f59e0b", "stroke-width": "2.5", "stroke-dasharray": "6 4" }
+
+                  - @monthly_rows.each_with_index do |row, index|
+                    - x = (padding + (index * x_step)).round(2)
+                    - due_y = y_for.call(row[:due])
+                    - manual_y = y_for.call(row[:manual])
+                    - cash_in_y = y_for.call(row[:cash_in])
+                    %circle{ cx: x, cy: cash_in_y, r: "3", fill: "#0ea5e9" }
+                    %circle{ cx: x, cy: due_y, r: "3", fill: "#10b981" }
+                    %circle{ cx: x, cy: manual_y, r: "3", fill: "#f59e0b" }
+
+                  -# X-axis labels
+                  - @monthly_rows.each_with_index do |row, index|
+                    - x = (padding + (index * x_step)).round(2)
+                    %text{ x: x, y: chart_height - 6, "text-anchor": "middle", "font-size": "11", fill: "#6b7280" }= row[:month]
+
+              %section.rounded-lg.border.border-gray-100.bg-white.p-4.hidden{ id: "cashflow-panel-spline", role: "tabpanel", data: { frequency_tabs_target: "panel", frequency: "spline" } }
+                %svg{ class: "w-full h-64", viewBox: "0 0 #{chart_width} #{chart_height}", role: "img", "aria-label": "Monthly cashflow spline chart" }
+                  %defs
+                    %linearGradient{ id: "cash-in-spline-gradient", x1: "0", y1: "0", x2: "0", y2: "1" }
+                      %stop{ offset: "0%", "stop-color": "#0ea5e9", "stop-opacity": "0.25" }
+                      %stop{ offset: "100%", "stop-color": "#0ea5e9", "stop-opacity": "0.02" }
+                  -# Grid lines
+                  - (0..3).each do |index|
+                    - y = padding + ((chart_height - (padding * 2)) * index / 3.0)
+                    %line{ x1: padding, x2: chart_width - padding, y1: y, y2: y, stroke: "#e5e7eb", "stroke-width": "1" }
+                  -# Cash-in spline area
+                  %path{ d: "#{cash_in_spline} L #{chart_width - padding},#{chart_height - padding} L #{padding},#{chart_height - padding} Z", fill: "url(#cash-in-spline-gradient)" }
+                  %path{ d: cash_in_spline, fill: "none", stroke: "#0ea5e9", "stroke-width": "2.5" }
+                  %path{ d: due_spline, fill: "none", stroke: "#10b981", "stroke-width": "2.5" }
+                  %path{ d: manual_spline, fill: "none", stroke: "#f59e0b", "stroke-width": "2.5", "stroke-dasharray": "6 4" }
+
+                  - @monthly_rows.each_with_index do |row, index|
+                    - x = (padding + (index * x_step)).round(2)
+                    - due_y = y_for.call(row[:due])
+                    - manual_y = y_for.call(row[:manual])
+                    - cash_in_y = y_for.call(row[:cash_in])
+                    %circle{ cx: x, cy: cash_in_y, r: "3", fill: "#0ea5e9" }
+                    %circle{ cx: x, cy: due_y, r: "3", fill: "#10b981" }
+                    %circle{ cx: x, cy: manual_y, r: "3", fill: "#f59e0b" }
+
+                  -# X-axis labels
+                  - @monthly_rows.each_with_index do |row, index|
+                    - x = (padding + (index * x_step)).round(2)
+                    %text{ x: x, y: chart_height - 6, "text-anchor": "middle", "font-size": "11", fill: "#6b7280" }= row[:month]
+
+            .grid.grid-cols-1.sm:grid-cols-3.gap-4.mt-6
               - @monthly_rows.each do |row|
-                - max_value = @max_cashflow_value.to_f
-                - payable_width = max_value.positive? ? ((row[:total_spend].to_f / max_value) * 100).round(2) : 0
-                - cash_in_width = max_value.positive? ? ((row[:cash_in].to_f / max_value) * 100).round(2) : 0
-                - payment_done_width = max_value.positive? ? ((row[:due].to_f / max_value) * 100).round(2) : 0
-                - payable_width = [payable_width, 100].min
-                - cash_in_width = [cash_in_width, 100].min
-                - payment_done_width = [payment_done_width, 100].min
                 - net = row[:cash_in] - row[:total_spend]
-                .grid.grid-cols-12.items-center.gap-3
-                  %div.col-span-3.text-sm.font-semibold.text-gray-700= row[:month]
-                  .col-span-6
-                    .space-y-3
-                      - payment_done_amount = Money.new(row[:due] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
-                      - cash_in_amount = Money.new(row[:cash_in] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
-                      - payable_amount = Money.new(row[:total_spend] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
-
-                      .relative.group
-                        .h-2.w-full.bg-gray-100.rounded-full.overflow-hidden
-                          .h-2.bg-emerald-500.rounded-full.block{ style: "width: #{payment_done_width}%" }
-                        %div{ class: "absolute -top-9 left-0 hidden group-hover:block rounded-md bg-gray-900 px-2 py-1 text-[11px] text-white shadow-lg whitespace-nowrap" }
-                          = "Payment done · #{payment_done_amount}"
-
-                      .relative.group
-                        .h-2.w-full.bg-gray-100.rounded-full.overflow-hidden
-                          .h-2.bg-sky-500.rounded-full.block{ style: "width: #{cash_in_width}%" }
-                        %div{ class: "absolute -top-9 left-0 hidden group-hover:block rounded-md bg-gray-900 px-2 py-1 text-[11px] text-white shadow-lg whitespace-nowrap" }
-                          = "Cash-in · #{cash_in_amount}"
-
-                      .relative.group
-                        .h-2.w-full.bg-gray-100.rounded-full.overflow-hidden
-                          .h-2.bg-rose-500.rounded-full.block{ style: "width: #{payable_width}%" }
-                        %div{ class: "absolute -top-9 left-0 hidden group-hover:block rounded-md bg-gray-900 px-2 py-1 text-[11px] text-white shadow-lg whitespace-nowrap" }
-                          = "Payable · #{payable_amount}"
-                  .col-span-3.text-right
-                    %div.text-xs.text-gray-500 Net
-                    - net_class = net.negative? ? "text-rose-600" : "text-emerald-600"
-                    %div.text-sm.font-semibold{ class: net_class }
-                      = Money.new(net * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+                .rounded-md.border.border-gray-100.bg-gray-50.p-3
+                  %div.text-xs.font-semibold.text-gray-500= row[:month]
+                  %div.text-sm.text-gray-700
+                    = "Due: #{Money.new(row[:due] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
+                  %div.text-sm.text-gray-700
+                    = "Manual: #{Money.new(row[:manual] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
+                  %div.text-sm.text-gray-700
+                    = "Cash-in: #{Money.new(row[:cash_in] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
+                  - net_class = net.negative? ? "text-rose-600" : "text-emerald-600"
+                  %div.text-sm.font-semibold{ class: net_class }
+                    = "Net: #{Money.new(net * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
