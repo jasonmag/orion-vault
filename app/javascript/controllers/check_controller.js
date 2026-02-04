@@ -2,7 +2,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["icon", "listItem"]
+  static targets = ["icon", "listItem", "modal"]
 
   connect() {
     // Set the initial icon state based on data-checked attribute
@@ -14,12 +14,12 @@ export default class extends Controller {
         this.setUncheckedIcon(icon)
       }
     })
+    this.pendingCheck = null
   }
 
   toggle(event) {
     const icon = event.currentTarget
     const listItem = icon.closest("li")
-    const parentUl = listItem.parentNode
     const listId = listItem.dataset.listId
     const dueDate = listItem.querySelector("[data-due-date]").dataset.dueDate
     const isChecked = icon.dataset.checked === "true"
@@ -28,12 +28,48 @@ export default class extends Controller {
     if (isChecked) {
       this.setUncheckedIcon(icon)
       icon.dataset.checked = "false"
+      this.persistCheck(listId, dueDate, false)
     } else {
-      this.setCheckedIcon(icon)
-      icon.dataset.checked = "true"
+      this.pendingCheck = { icon, listId, dueDate }
+      this.openModal()
+      return
     }
 
-    // Record the check/uncheck action in the database
+    // Reorder the list by checked/unchecked and due_date
+    // this.sortByCheckedAndDueDate(parentUl)
+  }
+
+  choosePayment(event) {
+    if (!this.pendingCheck) return
+    const paymentMethod = event.currentTarget.dataset.paymentMethod
+    const { icon, listId, dueDate } = this.pendingCheck
+    this.setCheckedIcon(icon)
+    icon.dataset.checked = "true"
+    this.persistCheck(listId, dueDate, true, paymentMethod)
+    this.pendingCheck = null
+    this.closeModal()
+  }
+
+  cancelPayment() {
+    this.pendingCheck = null
+    this.closeModal()
+  }
+
+  openModal() {
+    if (this.hasModalTarget) {
+      this.modalTarget.classList.remove("hidden")
+      this.modalTarget.classList.add("flex")
+    }
+  }
+
+  closeModal() {
+    if (this.hasModalTarget) {
+      this.modalTarget.classList.add("hidden")
+      this.modalTarget.classList.remove("flex")
+    }
+  }
+
+  persistCheck(listId, dueDate, checked, paymentMethod = null) {
     fetch(`/lists/${listId}/check_list_histories`, {
       method: "POST",
       headers: {
@@ -41,13 +77,11 @@ export default class extends Controller {
         "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
       },
       body: JSON.stringify({
-        checked: icon.dataset.checked === "true",
-        due_date: dueDate
+        checked,
+        due_date: dueDate,
+        payment_method: paymentMethod
       })
     })
-
-    // Reorder the list by checked/unchecked and due_date
-    // this.sortByCheckedAndDueDate(parentUl)
   }
 
   setCheckedIcon(icon) {

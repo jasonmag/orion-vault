@@ -1,11 +1,11 @@
-%form{ action: "#", method: "post" }
+.check-list{ "data-controller" => "check" }
   %ul
     - @lists_with_due_dates.each do |entry|
       - list = entry[:list]
       - due_date = entry[:due_date]
       - checked = list.checked_status_for(current_user, due_date).to_s # Get the checked status for the current user in strings
       %li{ class: "grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 mb-4", "data-check-target" => "listItem", "data-list-id" => list.id }
-        .flex.items-center.min-w-0{ "data-controller" => "check" }
+        .flex.items-center.min-w-0
           %span{ "data-action" => "click->check#toggle", "data-check-target" => "icon", "data-checked" => checked }
             - if checked
               %svg{ xmlns: "http://www.w3.org/2000/svg", class: "h-6 w-6 text-black", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }
@@ -23,3 +23,12 @@
             = due_date.strftime('%b %d')
           - else
             = "No due date"
+  .fixed.inset-0.z-50.hidden.items-center.justify-center{ class: "bg-black/50", "data-check-target" => "modal" }
+    .w-full.max-w-sm.rounded-xl.bg-white.p-6.shadow-xl
+      %h3.text-lg.font-semibold.text-gray-900 How was this paid?
+      %p.mt-1.text-sm.text-gray-600 Choose a payment method to record the expense.
+      .mt-4.grid.grid-cols-2.gap-3
+        %button{ type: "button", class: "rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50", "data-action" => "click->check#choosePayment", "data-payment-method" => "card" } Card
+        %button{ type: "button", class: "rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50", "data-action" => "click->check#choosePayment", "data-payment-method" => "cash" } Cash
+      .mt-4
+        %button{ type: "button", class: "text-sm font-semibold text-gray-700 underline", "data-action" => "click->check#cancelPayment" } Cancel

@@ -5,6 +5,8 @@ class CheckListHistoriesController < ApplicationController
     list = current_user.list.find(params[:list_id])
     due_date = Date.parse(params[:due_date].to_s) rescue nil
     checked = ActiveModel::Type::Boolean.new.cast(params[:checked])
+    payment_method = params[:payment_method].to_s
+    payment_method = nil unless %w[cash card].include?(payment_method)
 
     # Find an existing record for the user, list, and due_date, or initialize a new one
     check_list_history = CheckListHistory.find_or_initialize_by(
@@ -30,7 +32,8 @@ class CheckListHistoriesController < ApplicationController
           expense.assign_attributes(
             name: list.name,
             amount: list.price,
-            paid_at: Date.current
+            paid_at: Date.current,
+            payment_method: payment_method
           )
           expense.save!
         else
