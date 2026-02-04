@@ -50,3 +50,5 @@
             .flex.items-center.justify-end.gap-3
               = link_to "Cancel", expenses_path, class: "text-sm font-semibold text-gray-700 hover:text-gray-900"
               = f.submit "Save changes", class: "inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800"
+            .mt-4
+              = button_to "Delete expense", expense_path(@expense), method: :delete, class: "text-sm font-semibold text-red-600 underline"

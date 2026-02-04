@@ -68,8 +68,6 @@
                           = Money.new(expense.amount * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
                         %td.px-4.py-3.text-sm.text-right
                           = link_to "Edit", edit_expense_path(expense), class: "text-sm font-semibold text-gray-700 underline"
-                          - if expense.source == Expense::SOURCE_MANUAL
-                            = button_to "Remove", expense_path(expense), method: :delete, class: "text-sm font-semibold text-red-600 underline"
                   - else
                     %tr
                       %td.px-4.py-6.text-sm.text-gray-600{ colspan: "7" } No expenses yet.
