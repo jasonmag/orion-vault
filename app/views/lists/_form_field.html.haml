@@ -71,4 +71,5 @@
           %label.block.text-sm.font-semibold.text-gray-700{ for: "payment_schedule_notification_lead_time" }
             Notify days before due
             %span.text-red-500 *
-          %input.w-full.rounded-md.border.border-gray-300.px-3.py-2.text-gray-900.shadow-sm.focus:border-gray-900.focus:ring-1.focus:ring-gray-900{ type: "number", name: "list[payment_schedule_attributes][notification_lead_time]", id: "payment_schedule_notification_lead_time", value: @list.payment_schedule.notification_lead_time }
+          - default_notification_lead_time = @list.payment_schedule.notification_lead_time || current_user.user_setting&.notification_lead_time
+          %input.w-full.rounded-md.border.border-gray-300.px-3.py-2.text-gray-900.shadow-sm.focus:border-gray-900.focus:ring-1.focus:ring-gray-900{ type: "number", name: "list[payment_schedule_attributes][notification_lead_time]", id: "payment_schedule_notification_lead_time", value: default_notification_lead_time }

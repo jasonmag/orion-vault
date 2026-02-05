@@ -38,7 +38,9 @@ class ListsController < ApplicationController
   # GET /lists/new
   def new
     @list = List.new
-    @list.build_payment_schedule # Initialize payment schedule for the form
+    @list.build_payment_schedule(
+      notification_lead_time: current_user.user_setting&.notification_lead_time
+    )
   end
 
   # GET /lists/1/edit
