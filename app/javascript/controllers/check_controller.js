@@ -5,6 +5,7 @@ export default class extends Controller {
   static targets = ["icon", "listItem", "modal"]
 
   connect() {
+    console.log("check_controller connected")
     // Set the initial icon state based on data-checked attribute
     this.iconTargets.forEach(icon => {
       const isChecked = icon.dataset.checked === "true"
@@ -18,6 +19,7 @@ export default class extends Controller {
   }
 
   toggle(event) {
+    console.log("check_controller toggle fired")
     const icon = event.currentTarget
     const listItem = icon.closest("li")
     const listId = listItem.dataset.listId
