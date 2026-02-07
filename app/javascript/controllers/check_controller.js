@@ -2,7 +2,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["icon", "listItem", "modal"]
+  static targets = ["icon", "listItem", "modal", "cardField", "cardSelect", "cardError"]
 
   connect() {
     console.log("check_controller connected")
@@ -45,6 +45,24 @@ export default class extends Controller {
     if (!this.pendingCheck) return
     const paymentMethod = event.currentTarget.dataset.paymentMethod
     const { icon, listId, dueDate } = this.pendingCheck
+
+    if (paymentMethod === "card") {
+      this.showCardField()
+      const cardTypeId = this.cardSelectTarget.value
+      if (!cardTypeId) {
+        this.cardErrorTarget.classList.remove("hidden")
+        return
+      }
+      this.cardErrorTarget.classList.add("hidden")
+      this.setCheckedIcon(icon)
+      icon.dataset.checked = "true"
+      this.persistCheck(listId, dueDate, true, paymentMethod, cardTypeId)
+      this.pendingCheck = null
+      this.closeModal()
+      return
+    }
+
+    this.hideCardField()
     this.setCheckedIcon(icon)
     icon.dataset.checked = "true"
     this.persistCheck(listId, dueDate, true, paymentMethod)
@@ -62,6 +80,9 @@ export default class extends Controller {
       this.modalTarget.classList.remove("hidden")
       this.modalTarget.classList.add("flex")
     }
+    this.hideCardField()
+    this.cardSelectTarget.value = ""
+    this.cardErrorTarget.classList.add("hidden")
   }
 
   closeModal() {
@@ -69,9 +90,12 @@ export default class extends Controller {
       this.modalTarget.classList.add("hidden")
       this.modalTarget.classList.remove("flex")
     }
+    this.hideCardField()
+    this.cardSelectTarget.value = ""
+    this.cardErrorTarget.classList.add("hidden")
   }
 
-  persistCheck(listId, dueDate, checked, paymentMethod = null) {
+  persistCheck(listId, dueDate, checked, paymentMethod = null, creditCardTypeId = null) {
     fetch(`/lists/${listId}/check_list_histories`, {
       method: "POST",
       headers: {
@@ -81,9 +105,22 @@ export default class extends Controller {
       body: JSON.stringify({
         checked,
         due_date: dueDate,
-        payment_method: paymentMethod
+        payment_method: paymentMethod,
+        credit_card_type_id: creditCardTypeId
       })
     })
+  }
+
+  showCardField() {
+    if (this.hasCardFieldTarget) {
+      this.cardFieldTarget.hidden = false
+    }
+  }
+
+  hideCardField() {
+    if (this.hasCardFieldTarget) {
+      this.cardFieldTarget.hidden = true
+    }
   }
 
   setCheckedIcon(icon) {

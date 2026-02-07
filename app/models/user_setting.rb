@@ -1,5 +1,6 @@
 class UserSetting < ApplicationRecord
   belongs_to :user
+  has_many :credit_card_types, dependent: :destroy
 
   # Add validations here if needed
   validates :default_date_range_list_display, presence: true

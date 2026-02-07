@@ -4,6 +4,7 @@ class ExpensesController < ApplicationController
   def index
     @expense = Expense.new
     load_expenses
+    load_credit_card_types
   end
 
   def create
@@ -14,6 +15,7 @@ class ExpensesController < ApplicationController
       redirect_to expenses_path, notice: "Expense was successfully added."
     else
       load_expenses
+      load_credit_card_types
       render :index, status: :unprocessable_entity
     end
   end
@@ -26,6 +28,7 @@ class ExpensesController < ApplicationController
 
   def edit
     @expense = current_user.expenses.find(params[:id])
+    load_credit_card_types
   end
 
   def update
@@ -36,6 +39,7 @@ class ExpensesController < ApplicationController
     else
       @expense = Expense.new
       load_expenses
+      load_credit_card_types
       render :index, status: :unprocessable_entity
     end
   end
@@ -43,16 +47,20 @@ class ExpensesController < ApplicationController
   private
 
   def expense_params
-    params.require(:expense).permit(:name, :amount, :paid_at, :payment_method)
+    params.require(:expense).permit(:name, :amount, :paid_at, :payment_method, :credit_card_type_id)
   end
 
   def expense_update_params(expense)
-    permitted = [ :payment_method ]
+    permitted = [ :payment_method, :credit_card_type_id ]
     if expense.source == Expense::SOURCE_MANUAL
       permitted += [ :name, :amount, :paid_at ]
     end
 
     params.require(:expense).permit(*permitted)
+  end
+
+  def load_credit_card_types
+    @credit_card_types = current_user.user_setting&.credit_card_types&.order(created_at: :desc) || []
   end
 
   def load_expenses

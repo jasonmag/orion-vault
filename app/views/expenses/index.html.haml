@@ -10,7 +10,9 @@
         .grid.grid-cols-1.lg:grid-cols-3.gap-8.mb-10
           .lg:col-span-1
             %h2.text-lg.font-semibold.mb-4 Add Manual Expense
-            = form_with(model: @expense, url: expenses_path, class: "space-y-4") do |f|
+            - card_options = @credit_card_types.map { |card| ["#{card.bank_name} (**** #{card.last4})", card.id] }
+            - card_field_hidden = @expense.payment_method != "card"
+            = form_with(model: @expense, url: expenses_path, class: "space-y-4", data: { controller: "payment-method" }) do |f|
               - if @expense.errors.any?
                 .rounded-md.bg-red-50.p-4.text-sm.text-red-700
                   = @expense.errors.full_messages.to_sentence
@@ -29,7 +31,19 @@
 
               .space-y-1
                 = f.label :payment_method, class: "block text-sm font-semibold text-gray-700"
-                = f.select :payment_method, [["Cash In", "cash_in"], ["Cash", "cash"], ["Card", "card"], ["Bank Transfer", "bank_transfer"], ["Other", "other"]], { include_blank: "Select method" }, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+                = f.select :payment_method,
+                  [["Cash In", "cash_in"], ["Cash", "cash"], ["Card", "card"], ["Bank Transfer", "bank_transfer"], ["Other", "other"]],
+                  { include_blank: "Select method" },
+                  class: "w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900",
+                  data: { action: "change->payment-method#update", payment_method_target: "methodSelect" }
+
+              .space-y-1{ hidden: card_field_hidden, data: { payment_method_target: "cardField" } }
+                = f.label :credit_card_type_id, "Card Type", class: "block text-sm font-semibold text-gray-700"
+                = f.select :credit_card_type_id,
+                  card_options,
+                  { include_blank: "Select card" },
+                  class: "w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900",
+                  data: { payment_method_target: "cardSelect" }
 
               = f.submit "Add Expense", class: "w-full rounded-md bg-black px-4 py-2 text-sm font-semibold text-white"
 

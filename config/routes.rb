@@ -42,6 +42,7 @@ Rails.application.routes.draw do
 
   resource :user_setting, only: [ :show, :edit ] do
     post :update, on: :collection
+    resources :credit_card_types, only: [ :create ]
   end
 
   namespace :api do

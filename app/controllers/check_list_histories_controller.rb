@@ -7,6 +7,7 @@ class CheckListHistoriesController < ApplicationController
     checked = ActiveModel::Type::Boolean.new.cast(params[:checked])
     payment_method = params[:payment_method].to_s
     payment_method = nil unless %w[cash card].include?(payment_method)
+    credit_card_type_id = params[:credit_card_type_id]
 
     # Find an existing record for the user, list, and due_date, or initialize a new one
     check_list_history = CheckListHistory.find_or_initialize_by(
@@ -33,7 +34,8 @@ class CheckListHistoriesController < ApplicationController
             name: list.name,
             amount: list.price,
             paid_at: Date.current,
-            payment_method: payment_method
+            payment_method: payment_method,
+            credit_card_type_id: credit_card_type_id
           )
           expense.save!
         else

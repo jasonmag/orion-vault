@@ -7,6 +7,8 @@ export default class extends Controller {
 
   connect() {
     this.submitTimeout = null
+    this.hideTimeout = null
+    this.scheduleHide()
   }
 
   queueSubmit() {
@@ -31,6 +33,16 @@ export default class extends Controller {
   showStatus(text) {
     if (this.hasStatusTarget) {
       this.statusTarget.textContent = text
+      this.statusTarget.classList.remove("hidden")
+      this.scheduleHide()
     }
+  }
+
+  scheduleHide() {
+    if (!this.hasStatusTarget) return
+    clearTimeout(this.hideTimeout)
+    this.hideTimeout = setTimeout(() => {
+      this.statusTarget.classList.add("hidden")
+    }, 5000)
   }
 }

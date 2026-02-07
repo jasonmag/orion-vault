@@ -12,6 +12,7 @@ class ListsController < ApplicationController
     end
 
     @lists_with_due_dates.sort_by! { |entry| entry[:due_date] }
+    @credit_card_types = current_user.user_setting&.credit_card_types&.order(created_at: :desc) || []
   end
 
   def frequency

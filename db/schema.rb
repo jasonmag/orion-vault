@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_06_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_07_010000) do
   create_table "admins", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -39,6 +39,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_000000) do
     t.index ["user_id"], name: "index_check_list_histories_on_user_id"
   end
 
+  create_table "credit_card_types", force: :cascade do |t|
+    t.string "bank_name", null: false
+    t.string "last4", null: false
+    t.integer "user_setting_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_setting_id"], name: "index_credit_card_types_on_user_setting_id"
+  end
+
   create_table "expenses", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "list_id"
@@ -50,6 +59,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_000000) do
     t.date "due_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "credit_card_type_id"
+    t.index ["credit_card_type_id"], name: "index_expenses_on_credit_card_type_id"
     t.index ["list_id"], name: "index_expenses_on_list_id"
     t.index ["user_id"], name: "index_expenses_on_user_id"
   end
@@ -120,6 +131,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_000000) do
 
   add_foreign_key "check_list_histories", "lists"
   add_foreign_key "check_list_histories", "users"
+  add_foreign_key "credit_card_types", "user_settings"
+  add_foreign_key "expenses", "credit_card_types"
   add_foreign_key "expenses", "lists"
   add_foreign_key "expenses", "users"
   add_foreign_key "lists", "users"

@@ -3,6 +3,8 @@ class UserSettingsController < ApplicationController
   before_action :set_user_setting
 
   def show
+    @credit_card_type = @user_setting.credit_card_types.build
+    @credit_card_types = @user_setting.credit_card_types.order(created_at: :desc)
   end
 
   def edit
@@ -14,22 +16,16 @@ class UserSettingsController < ApplicationController
       respond_to do |format|
         format.html { redirect_to user_setting_path, notice: "Settings updated!" }
         format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-            "user_setting_status",
-            partial: "user_settings/status",
-            locals: { message: "Saved", variant: :success }
-          )
+          flash.now[:notice] = "Settings updated!"
+          render turbo_stream: turbo_stream.replace("flash", partial: "layouts/flash")
         end
       end
     else
       respond_to do |format|
         format.html { render :show, status: :unprocessable_entity }
         format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-            "user_setting_status",
-            partial: "user_settings/status",
-            locals: { message: "Check inputs and try again", variant: :error }
-          ), status: :unprocessable_entity
+          flash.now[:alert] = "Check inputs and try again"
+          render turbo_stream: turbo_stream.replace("flash", partial: "layouts/flash"), status: :unprocessable_entity
         end
       end
     end

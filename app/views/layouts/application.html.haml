@@ -19,4 +19,5 @@
     - main_classes = content_for?(:main_classes) ? yield(:main_classes) : "container mx-auto mt-8 px-5"
     %main{ class: main_classes }
       = render "layouts/header"
+      = render "layouts/flash"
       = yield

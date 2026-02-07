@@ -56,11 +56,11 @@ module Api
       end
 
       def expense_params
-        params.require(:expense).permit(:name, :amount, :paid_at, :payment_method, :list_id)
+        params.require(:expense).permit(:name, :amount, :paid_at, :payment_method, :list_id, :credit_card_type_id)
       end
 
       def expense_update_params
-        params.require(:expense).permit(:name, :amount, :paid_at, :payment_method, :list_id)
+        params.require(:expense).permit(:name, :amount, :paid_at, :payment_method, :list_id, :credit_card_type_id)
       end
 
       def expense_payload(expense)
@@ -70,6 +70,7 @@ module Api
           amount: expense.amount,
           paid_at: expense.paid_at,
           payment_method: expense.payment_method,
+          credit_card_type_id: expense.credit_card_type_id,
           source: expense.source,
           due_date: expense.due_date,
           list: expense.list ? { id: expense.list.id, name: expense.list.name } : nil

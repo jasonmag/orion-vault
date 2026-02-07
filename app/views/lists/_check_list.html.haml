@@ -27,8 +27,16 @@
     .w-full.max-w-sm.rounded-xl.bg-white.p-6.shadow-xl
       %h3.text-lg.font-semibold.text-gray-900 How was this paid?
       %p.mt-1.text-sm.text-gray-600 Choose a payment method to record the expense.
+      - card_options = @credit_card_types.map { |card| ["#{card.bank_name} (**** #{card.last4})", card.id] }
       .mt-4.grid.grid-cols-2.gap-3
         %button{ type: "button", class: "rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50", "data-action" => "click->check#choosePayment", "data-payment-method" => "card" } Card
         %button{ type: "button", class: "rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50", "data-action" => "click->check#choosePayment", "data-payment-method" => "cash" } Cash
+      .mt-4{ hidden: true, "data-check-target" => "cardField" }
+        %label.block.text-sm.font-semibold.text-gray-700 Card Type
+        %select.w-full.rounded-md.border.border-gray-300.px-3.py-2.text-gray-900{ "data-check-target" => "cardSelect" }
+          %option{ value: "" } Select card
+          - card_options.each do |label, value|
+            %option{ value: value }= label
+        %p.mt-2.text-xs.text-red-600.hidden{ "data-check-target" => "cardError" } Please choose a card type.
       .mt-4
         %button{ type: "button", class: "text-sm font-semibold text-gray-700 underline", "data-action" => "click->check#cancelPayment" } Cancel

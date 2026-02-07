@@ -1,0 +1,8 @@
+- if flash.any?
+  %div#flash.space-y-2.mt-20
+    - flash.each do |type, message|
+      - next if message.blank?
+      - variant = type.to_s == "alert" ? "text-red-700 bg-red-50 ring-red-100" : "text-emerald-700 bg-emerald-50 ring-emerald-100"
+      %div{ class: "rounded-lg px-4 py-3 text-sm font-semibold ring-1 #{variant}" }= message
+- else
+  %div#flash

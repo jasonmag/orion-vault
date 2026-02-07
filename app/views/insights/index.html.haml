@@ -9,33 +9,36 @@
 
         .grid.grid-cols-1.md:grid-cols-3.gap-6.mb-10
           .rounded-lg.border.border-gray-200.bg-white.p-5
-            %p.text-sm.text-gray-500 Total cash-out (last 6 months)
+            %p.text-sm.text-gray-500 Total Card Payments
             %p.text-2xl.font-semibold.text-gray-900
-              = Money.new(@total_spend * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+              = Money.new(@card_spend * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
           .rounded-lg.border.border-gray-200.bg-white.p-5
-            %p.text-sm.text-gray-500 Cash-in (last 6 months)
+            %p.text-sm.text-gray-500 Total Cash Payments
+            %p.text-2xl.font-semibold.text-gray-900
+              = Money.new(@cash_spend * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+          .rounded-lg.border.border-gray-200.bg-white.p-5
+            %p.text-sm.text-gray-500 Total Cash-ins
             %p.text-2xl.font-semibold.text-gray-900
               = Money.new(@total_cash_in * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
-          .rounded-lg.border.border-gray-200.bg-white.p-5
-            %p.text-sm.text-gray-500 Net (cash-in minus cash-out)
-            %p.text-2xl.font-semibold.text-gray-900
-              = Money.new(@net_total * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
 
         .rounded-xl.border.border-gray-200.bg-white.p-6
           .flex.items-center.justify-between.mb-4
             %div
               %h2.text-lg.font-semibold Monthly cashflow comparison
-              %p.text-sm.text-gray-500 Cash-in vs payments done (due + manual), last 6 months
+              %p.text-sm.text-gray-500 Cash, Card, and Cash-in over the last 6 months
             .flex.items-center.gap-4.text-sm.text-gray-600
               .flex.items-center.gap-2
                 %span.inline-block.h-3.w-3.rounded-full.bg-emerald-500
-                Payments done (due)
+                Cash Payments
               .flex.items-center.gap-2
-                %span.inline-block.h-3.w-3.rounded-full.bg-amber-400
-                Payments done (manual)
+                %span.inline-block.h-3.w-3.rounded-full.bg-indigo-500
+                Card Payments
+              .flex.items-center.gap-2
+                %span.inline-block.h-3.w-3.rounded-full.bg-slate-400
+                Other Payments
               .flex.items-center.gap-2
                 %span.inline-block.h-3.w-3.rounded-full.bg-sky-500
-                Cash-in
+                Cash-ins
 
           - if @max_spend.zero? && @max_cash_in.zero?
             %p.text-sm.text-gray-600 No cash activity in the last 6 months.
@@ -46,11 +49,13 @@
             - max_value = @max_cashflow_value.to_f
             - x_step = @monthly_rows.size > 1 ? (chart_width - (padding * 2)).fdiv(@monthly_rows.size - 1) : 0
             - y_for = ->(value) { max_value.zero? ? (chart_height - padding) : (chart_height - padding - ((value.to_f / max_value) * (chart_height - (padding * 2)))).round(2) }
-            - due_coords = @monthly_rows.map.with_index { |row, index| [(padding + (index * x_step)).round(2), y_for.call(row[:due])] }
-            - manual_coords = @monthly_rows.map.with_index { |row, index| [(padding + (index * x_step)).round(2), y_for.call(row[:manual])] }
+            - cash_coords = @monthly_rows.map.with_index { |row, index| [(padding + (index * x_step)).round(2), y_for.call(row[:cash])] }
+            - card_coords = @monthly_rows.map.with_index { |row, index| [(padding + (index * x_step)).round(2), y_for.call(row[:card])] }
+            - other_coords = @monthly_rows.map.with_index { |row, index| [(padding + (index * x_step)).round(2), y_for.call(row[:other])] }
             - cash_in_coords = @monthly_rows.map.with_index { |row, index| [(padding + (index * x_step)).round(2), y_for.call(row[:cash_in])] }
-            - due_points = due_coords.map { |point| "#{point[0]},#{point[1]}" }.join(" ")
-            - manual_points = manual_coords.map { |point| "#{point[0]},#{point[1]}" }.join(" ")
+            - cash_points = cash_coords.map { |point| "#{point[0]},#{point[1]}" }.join(" ")
+            - card_points = card_coords.map { |point| "#{point[0]},#{point[1]}" }.join(" ")
+            - other_points = other_coords.map { |point| "#{point[0]},#{point[1]}" }.join(" ")
             - cash_in_points = cash_in_coords.map { |point| "#{point[0]},#{point[1]}" }.join(" ")
             - spline_path = lambda do |points|
               - next "" if points.empty?
@@ -69,8 +74,9 @@
                 - path << " C #{c1x},#{c1y} #{c2x},#{c2y} #{p2[0]},#{p2[1]}"
               - path
             - cash_in_spline = spline_path.call(cash_in_coords)
-            - due_spline = spline_path.call(due_coords)
-            - manual_spline = spline_path.call(manual_coords)
+            - cash_spline = spline_path.call(cash_coords)
+            - card_spline = spline_path.call(card_coords)
+            - other_spline = spline_path.call(other_coords)
 
             .space-y-4{ data: { controller: "frequency-tabs" } }
               .inline-flex.rounded-md.shadow-sm{ role: "tablist" }
@@ -90,17 +96,20 @@
                   -# Cash-in area
                   %path{ d: "M #{cash_in_points} L #{chart_width - padding},#{chart_height - padding} L #{padding},#{chart_height - padding} Z", fill: "url(#cash-in-gradient)" }
                   %polyline{ points: cash_in_points, fill: "none", stroke: "#0ea5e9", "stroke-width": "2.5" }
-                  %polyline{ points: due_points, fill: "none", stroke: "#10b981", "stroke-width": "2.5" }
-                  %polyline{ points: manual_points, fill: "none", stroke: "#f59e0b", "stroke-width": "2.5", "stroke-dasharray": "6 4" }
+                  %polyline{ points: cash_points, fill: "none", stroke: "#10b981", "stroke-width": "2.5" }
+                  %polyline{ points: card_points, fill: "none", stroke: "#6366f1", "stroke-width": "2.5" }
+                  %polyline{ points: other_points, fill: "none", stroke: "#94a3b8", "stroke-width": "2.5", "stroke-dasharray": "4 4" }
 
                   - @monthly_rows.each_with_index do |row, index|
                     - x = (padding + (index * x_step)).round(2)
-                    - due_y = y_for.call(row[:due])
-                    - manual_y = y_for.call(row[:manual])
+                    - cash_y = y_for.call(row[:cash])
+                    - card_y = y_for.call(row[:card])
+                    - other_y = y_for.call(row[:other])
                     - cash_in_y = y_for.call(row[:cash_in])
                     %circle{ cx: x, cy: cash_in_y, r: "3", fill: "#0ea5e9" }
-                    %circle{ cx: x, cy: due_y, r: "3", fill: "#10b981" }
-                    %circle{ cx: x, cy: manual_y, r: "3", fill: "#f59e0b" }
+                    %circle{ cx: x, cy: cash_y, r: "3", fill: "#10b981" }
+                    %circle{ cx: x, cy: card_y, r: "3", fill: "#6366f1" }
+                    %circle{ cx: x, cy: other_y, r: "3", fill: "#94a3b8" }
 
                   -# X-axis labels
                   - @monthly_rows.each_with_index do |row, index|
@@ -120,17 +129,20 @@
                   -# Cash-in spline area
                   %path{ d: "#{cash_in_spline} L #{chart_width - padding},#{chart_height - padding} L #{padding},#{chart_height - padding} Z", fill: "url(#cash-in-spline-gradient)" }
                   %path{ d: cash_in_spline, fill: "none", stroke: "#0ea5e9", "stroke-width": "2.5" }
-                  %path{ d: due_spline, fill: "none", stroke: "#10b981", "stroke-width": "2.5" }
-                  %path{ d: manual_spline, fill: "none", stroke: "#f59e0b", "stroke-width": "2.5", "stroke-dasharray": "6 4" }
+                  %path{ d: cash_spline, fill: "none", stroke: "#10b981", "stroke-width": "2.5" }
+                  %path{ d: card_spline, fill: "none", stroke: "#6366f1", "stroke-width": "2.5" }
+                  %path{ d: other_spline, fill: "none", stroke: "#94a3b8", "stroke-width": "2.5", "stroke-dasharray": "4 4" }
 
                   - @monthly_rows.each_with_index do |row, index|
                     - x = (padding + (index * x_step)).round(2)
-                    - due_y = y_for.call(row[:due])
-                    - manual_y = y_for.call(row[:manual])
+                    - cash_y = y_for.call(row[:cash])
+                    - card_y = y_for.call(row[:card])
+                    - other_y = y_for.call(row[:other])
                     - cash_in_y = y_for.call(row[:cash_in])
                     %circle{ cx: x, cy: cash_in_y, r: "3", fill: "#0ea5e9" }
-                    %circle{ cx: x, cy: due_y, r: "3", fill: "#10b981" }
-                    %circle{ cx: x, cy: manual_y, r: "3", fill: "#f59e0b" }
+                    %circle{ cx: x, cy: cash_y, r: "3", fill: "#10b981" }
+                    %circle{ cx: x, cy: card_y, r: "3", fill: "#6366f1" }
+                    %circle{ cx: x, cy: other_y, r: "3", fill: "#94a3b8" }
 
                   -# X-axis labels
                   - @monthly_rows.each_with_index do |row, index|
@@ -143,9 +155,12 @@
                 .rounded-md.border.border-gray-100.bg-gray-50.p-3
                   %div.text-xs.font-semibold.text-gray-500= row[:month]
                   %div.text-sm.text-gray-700
-                    = "Due: #{Money.new(row[:due] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
+                    = "Cash: #{Money.new(row[:cash] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
                   %div.text-sm.text-gray-700
-                    = "Manual: #{Money.new(row[:manual] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
+                    = "Card: #{Money.new(row[:card] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
+                  - if row[:other].positive?
+                    %div.text-sm.text-gray-700
+                      = "Other: #{Money.new(row[:other] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
                   %div.text-sm.text-gray-700
                     = "Cash-in: #{Money.new(row[:cash_in] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
                   - net_class = net.negative? ? "text-rose-600" : "text-emerald-600"
