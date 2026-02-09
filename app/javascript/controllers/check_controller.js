@@ -16,6 +16,9 @@ export default class extends Controller {
       }
     })
     this.pendingCheck = null
+    this.totalDuesLabel = document.querySelector("[data-total-dues-label]")
+    this.paidDuesCount = this.totalDuesLabel ? parseInt(this.totalDuesLabel.dataset.paidDues || "0", 10) : 0
+    this.totalDuesCount = this.totalDuesLabel ? parseInt(this.totalDuesLabel.dataset.totalDues || "0", 10) : 0
   }
 
   toggle(event) {
@@ -30,7 +33,12 @@ export default class extends Controller {
     if (isChecked) {
       this.setUncheckedIcon(icon)
       icon.dataset.checked = "false"
-      this.persistCheck(listId, dueDate, false)
+      this.adjustPaidDues(-1)
+      this.persistCheck(listId, dueDate, false).catch(() => {
+        this.setCheckedIcon(icon)
+        icon.dataset.checked = "true"
+        this.adjustPaidDues(1)
+      })
     } else {
       this.pendingCheck = { icon, listId, dueDate }
       this.openModal()
@@ -56,7 +64,12 @@ export default class extends Controller {
       this.cardErrorTarget.classList.add("hidden")
       this.setCheckedIcon(icon)
       icon.dataset.checked = "true"
-      this.persistCheck(listId, dueDate, true, paymentMethod, cardTypeId)
+      this.adjustPaidDues(1)
+      this.persistCheck(listId, dueDate, true, paymentMethod, cardTypeId).catch(() => {
+        this.setUncheckedIcon(icon)
+        icon.dataset.checked = "false"
+        this.adjustPaidDues(-1)
+      })
       this.pendingCheck = null
       this.closeModal()
       return
@@ -65,7 +78,12 @@ export default class extends Controller {
     this.hideCardField()
     this.setCheckedIcon(icon)
     icon.dataset.checked = "true"
-    this.persistCheck(listId, dueDate, true, paymentMethod)
+    this.adjustPaidDues(1)
+    this.persistCheck(listId, dueDate, true, paymentMethod).catch(() => {
+      this.setUncheckedIcon(icon)
+      icon.dataset.checked = "false"
+      this.adjustPaidDues(-1)
+    })
     this.pendingCheck = null
     this.closeModal()
   }
@@ -96,7 +114,7 @@ export default class extends Controller {
   }
 
   persistCheck(listId, dueDate, checked, paymentMethod = null, creditCardTypeId = null) {
-    fetch(`/lists/${listId}/check_list_histories`, {
+    return fetch(`/lists/${listId}/check_list_histories`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -108,7 +126,16 @@ export default class extends Controller {
         payment_method: paymentMethod,
         credit_card_type_id: creditCardTypeId
       })
+    }).then(response => {
+      if (!response.ok) throw new Error("Unable to save due status")
     })
+  }
+
+  adjustPaidDues(delta) {
+    if (!this.totalDuesLabel) return
+    this.paidDuesCount = Math.max(0, Math.min(this.totalDuesCount, this.paidDuesCount + delta))
+    this.totalDuesLabel.dataset.paidDues = String(this.paidDuesCount)
+    this.totalDuesLabel.textContent = `Total dues: ${this.paidDuesCount}/${this.totalDuesCount}`
   }
 
   showCardField() {

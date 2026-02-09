@@ -31,7 +31,7 @@
     - has_dues = entries.any?
     - base_classes = in_month ? "bg-white text-gray-700" : "bg-emerald-50 text-gray-400"
     - ring_classes = is_today ? "ring-2 ring-emerald-500 ring-inset" : ""
-    %div{ class: "min-h-[120px] p-3 #{base_classes} #{ring_classes} border border-emerald-200" }
+    = link_to lists_path(start_date: day, end_date: day), class: "block min-h-[120px] p-3 #{base_classes} #{ring_classes} border border-emerald-200 hover:bg-emerald-100/40 transition-colors" do
       .flex.items-center.justify-between
         %div.text-xs.font-semibold= day.day
         - if has_dues

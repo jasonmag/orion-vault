@@ -6,22 +6,20 @@ class ListsController < ApplicationController
 
   # GET /lists or /lists.json
   def index
-    @lists_with_due_dates = current_user.list.visible_or_once(@start_date, @end_date).flat_map do |list|
-      due_dates = list.due_dates_within_range(@start_date, @end_date)
-      due_dates.map { |due_date| { list: list, due_date: due_date } }
-    end
-
+    @lists_with_due_dates = dues_in_range(@start_date, @end_date)
     @lists_with_due_dates.sort_by! { |entry| entry[:due_date] }
+    @list_total_dues = @lists_with_due_dates.size
+    @list_dues_paid = paid_count_for(@lists_with_due_dates)
+
     @credit_card_types = current_user.user_setting&.credit_card_types&.order(created_at: :desc) || []
   end
 
   def calendar
     @calendar_month_start = Date.current.beginning_of_month
     @calendar_month_end = Date.current.end_of_month
-    @calendar_lists_with_due_dates = current_user.list.visible_or_once(@calendar_month_start, @calendar_month_end).flat_map do |list|
-      due_dates = list.due_dates_within_range(@calendar_month_start, @calendar_month_end)
-      due_dates.map { |due_date| { list: list, due_date: due_date } }
-    end
+    @calendar_lists_with_due_dates = dues_in_range(@calendar_month_start, @calendar_month_end)
+    @calendar_total_dues = @calendar_lists_with_due_dates.size
+    @calendar_dues_paid = paid_count_for(@calendar_lists_with_due_dates)
   end
 
   def frequency
@@ -101,6 +99,31 @@ class ListsController < ApplicationController
   end
 
   private
+    def dues_in_range(start_date, end_date)
+      current_user.list.visible_or_once(start_date, end_date).flat_map do |list|
+        due_dates = list.due_dates_within_range(start_date, end_date)
+        due_dates.map { |due_date| { list: list, due_date: due_date } }
+      end
+    end
+
+    def paid_count_for(entries)
+      return 0 if entries.empty?
+
+      list_ids = entries.map { |entry| entry[:list].id }.uniq
+      due_dates = entries.map { |entry| entry[:due_date] }.uniq
+
+      paid_pairs = CheckListHistory.where(
+        user_id: current_user.id,
+        checked: true,
+        list_id: list_ids,
+        due_date: due_dates
+      ).pluck(:list_id, :due_date).each_with_object({}) do |(list_id, due_date), pairs|
+        pairs[[ list_id, due_date.to_date ]] = true
+      end
+
+      entries.count { |entry| paid_pairs[[ entry[:list].id, entry[:due_date] ]] }
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_list
       @list = current_user.list.find(params[:id])

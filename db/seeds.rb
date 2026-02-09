@@ -10,7 +10,14 @@
 
 # Optional: clean database before seeding
 
-load(Rails.root.join("db/seeds/01_admins.rb")) if Rails.env.development?
-load(Rails.root.join("db/seeds/02_users.rb")) if Rails.env.development?
-load(Rails.root.join("db/seeds/03_user_settings.rb")) if Rails.env.development?
-load(Rails.root.join("db/seeds/04_lists.rb")) if Rails.env.development?
+if Rails.env.development?
+  load(Rails.root.join("db/seeds/01_admins.rb"))
+  load(Rails.root.join("db/seeds/02_users.rb"))
+  load(Rails.root.join("db/seeds/03_user_settings.rb"))
+  load(Rails.root.join("db/seeds/04_lists.rb"))
+elsif ENV["DEMO_SEED"] == "true"
+  load(Rails.root.join("db/seeds/10_presentation_demo.rb"))
+else
+  puts "No default seeds for #{Rails.env}."
+  puts "To create presentation demo data manually, run with DEMO_SEED=true."
+end
