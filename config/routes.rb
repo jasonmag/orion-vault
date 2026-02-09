@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   resources :lists do
     get "frequency", on: :collection
     get "select_dates", on: :collection
+    get "calendar", on: :collection
     resources :check_list_histories, only: [ :create ]
   end
 

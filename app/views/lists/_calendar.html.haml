@@ -1,0 +1,44 @@
+- month_start = @calendar_month_start
+- month_end = @calendar_month_end
+- grid_start = month_start.beginning_of_week
+- grid_end = month_end.end_of_week
+- day_names = Date::ABBR_DAYNAMES
+- due_map = @calendar_lists_with_due_dates.select { |entry| entry[:due_date].present? }.group_by { |entry| entry[:due_date] }
+- today = Date.current
+
+%div.flex.flex-col.gap-3.mb-5
+  %div.flex.items-start.justify-between
+    %div
+      %h2.text-xl.font-semibold.text-gray-900= month_start.strftime("%B %Y")
+      %p.text-sm.text-gray-600 Select a day to view upcoming dues.
+    %div.text-xs.text-gray-500
+      %span.inline-flex.items-center.gap-2
+        %span.inline-block.h-2.5.w-2.5.rounded-full.bg-emerald-500
+        Due today
+      %span.inline-flex.items-center.gap-2.ml-4
+        %span.inline-block.h-2.5.w-2.5.rounded-full.bg-emerald-200
+        Due this month
+
+%div{ class: "grid grid-cols-7 gap-px bg-emerald-200 text-[11px] font-semibold text-gray-600 mb-2 rounded-lg overflow-hidden border border-emerald-200" }
+  - day_names.each do |day|
+    %div{ class: "text-center bg-white py-2 uppercase tracking-wide border border-emerald-200" }= day
+
+%div.grid.grid-cols-7.gap-px.bg-emerald-200.rounded-xl.overflow-hidden.border.border-emerald-200
+  - (grid_start..grid_end).each do |day|
+    - in_month = day.month == month_start.month
+    - entries = due_map[day] || []
+    - is_today = day == today
+    - has_dues = entries.any?
+    - base_classes = in_month ? "bg-white text-gray-700" : "bg-emerald-50 text-gray-400"
+    - ring_classes = is_today ? "ring-2 ring-emerald-500 ring-inset" : ""
+    %div{ class: "min-h-[120px] p-3 #{base_classes} #{ring_classes} border border-emerald-200" }
+      .flex.items-center.justify-between
+        %div.text-xs.font-semibold= day.day
+        - if has_dues
+          %span{ class: "inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-emerald-100 text-[11px] font-semibold text-emerald-700 px-1" }= entries.size
+      - if entries.any?
+        %ul.mt-2.space-y-1
+          - entries.first(3).each do |entry|
+            %li.text-xs.text-gray-700.truncate= entry[:list].name
+          - if entries.size > 3
+            %li{ class: "text-[11px] text-gray-500" }= "+#{entries.size - 3} more"

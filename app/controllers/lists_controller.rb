@@ -15,6 +15,15 @@ class ListsController < ApplicationController
     @credit_card_types = current_user.user_setting&.credit_card_types&.order(created_at: :desc) || []
   end
 
+  def calendar
+    @calendar_month_start = Date.current.beginning_of_month
+    @calendar_month_end = Date.current.end_of_month
+    @calendar_lists_with_due_dates = current_user.list.visible_or_once(@calendar_month_start, @calendar_month_end).flat_map do |list|
+      due_dates = list.due_dates_within_range(@calendar_month_start, @calendar_month_end)
+      due_dates.map { |due_date| { list: list, due_date: due_date } }
+    end
+  end
+
   def frequency
     today = Date.current
     @status = params[:status] == "expired" ? "expired" : "current"

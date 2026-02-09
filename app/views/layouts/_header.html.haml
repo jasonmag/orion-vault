@@ -13,7 +13,7 @@
 
     .hidden.lg:flex.lg:gap-x-12
       - if user_signed_in?
-        %a{ href: "/lists", class: "text-sm font-semibold leading-6 text-gray-900" } Dues
+        %a{ href: calendar_lists_path, class: "text-sm font-semibold leading-6 text-gray-900" } Dues
         %a{ href: frequency_lists_path, class: "text-sm font-semibold leading-6 text-gray-900" } Frequency
         %a{ href: expenses_path, class: "text-sm font-semibold leading-6 text-gray-900" } Expenses
         %a{ href: insights_path, class: "text-sm font-semibold leading-6 text-gray-900" } Insights
@@ -42,7 +42,7 @@
         %div{ class: "-my-6 divide-y divide-gray-500/10" }
           .space-y-2.py-6
             - if user_signed_in?
-              %a{ href: "/lists", class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Dues
+              %a{ href: calendar_lists_path, class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Dues
               %a{ href: frequency_lists_path, class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Frequency
               %a{ href: expenses_path, class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Expenses
               %a{ href: insights_path, class: "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" } Insights

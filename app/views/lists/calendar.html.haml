@@ -1,0 +1,16 @@
+%body.bg-background
+  .bg-background
+    .relative.isolate.px-6.pt-8.lg:px-8.mx-auto
+      .mx-auto.max-w-2xl.py-16.sm:py-24.lg:py-28
+        .flex.items-center.justify-between.mb-6
+          %div
+            %h1.text-2xl.font-bold Dues Calendar
+            %p.text-sm.text-gray-600 View dues by day for the current month.
+          .flex.items-center.gap-3
+            = render "lists/add_list"
+        .inline-flex.rounded-md.shadow-sm.mb-4{ role: "tablist" }
+          = button_to "Calendar", calendar_lists_path, method: :get, form: { class: "inline-block" }, class: "px-4 py-2 text-sm font-semibold border border-emerald-200 rounded-l-md bg-emerald-600 text-white border-emerald-600"
+          = button_to "List", lists_path, method: :get, form: { class: "inline-block -ml-px" }, class: "px-4 py-2 text-sm font-semibold border border-emerald-200 rounded-r-md bg-white text-emerald-700 hover:bg-emerald-50"
+
+        .rounded-xl.border.border-emerald-100.bg-emerald-50.p-5.shadow-sm
+          = render "lists/calendar"
