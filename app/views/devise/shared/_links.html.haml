@@ -10,10 +10,10 @@
 - links << { text: "Didn't receive confirmation instructions?", path: new_confirmation_path(resource_name) } if devise_mapping.confirmable? && controller_name != 'confirmations'
 - links << { text: "Didn't receive unlock instructions?", path: new_unlock_path(resource_name) } if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks'
 - if links.any?
-  %div.flex.items-center
+  %div.w-full.flex.flex-wrap.items-center.justify-center.gap-x-4.gap-y-2
     - links.each_with_index do |link, index|
       - if link[:button] && link[:provider] == :google_oauth2
-        = button_to link[:path], data: { turbo: false }, class: "inline-flex items-center gap-1 text-blue-600 hover:underline", form_class: "inline" do
+        = link_to link[:path], data: { turbo: false }, class: "inline-flex items-center gap-1 px-2 py-1 text-blue-600 hover:underline" do
           %svg.h-4.w-4{ viewBox: "0 0 48 48", aria: { hidden: "true" } }
             %path{ fill: "#EA4335", d: "M24 9.5c3.54 0 6.68 1.22 9.16 3.22l6.84-6.84C35.64 2.34 30.14 0 24 0 14.62 0 6.6 5.38 2.7 13.2l7.95 6.18C12.36 13.16 17.74 9.5 24 9.5z" }
             %path{ fill: "#4285F4", d: "M46.1 24.55c0-1.64-.15-3.21-.42-4.73H24v9.02h12.4c-.54 2.9-2.19 5.35-4.67 7.01l7.18 5.57C42.94 37.5 46.1 31.6 46.1 24.55z" }
@@ -21,9 +21,8 @@
             %path{ fill: "#34A853", d: "M24 48c6.14 0 11.64-2.02 15.52-5.46l-7.18-5.57c-2 1.35-4.55 2.15-8.34 2.15-6.26 0-11.64-3.66-13.35-9.38l-7.95 6.18C6.6 42.62 14.62 48 24 48z" }
           %span= link[:text]
       - elsif link[:button]
-        = button_to link[:text], link[:path], data: { turbo: false }, class: "text-blue-600 hover:underline"
+        = link_to link[:text], link[:path], data: { turbo: false }, class: "inline-flex px-2 py-1 text-blue-600 hover:underline"
       - else
-        = link_to link[:text], link[:path], class: "text-blue-600 hover:underline"
+        = link_to link[:text], link[:path], class: "inline-flex px-2 py-1 text-blue-600 hover:underline"
       - unless index == links.size - 1
-        %span.mx-2.text-gray-500
-          |
+        %span.h-4.border-r.border-gray-300
