@@ -9,28 +9,28 @@
 - today = Date.current
 
 %div.flex.flex-col.gap-3.mb-5
-  %div.flex.items-start.justify-between
+  %div.flex.flex-col.gap-3.sm:flex-row.sm:items-start.sm:justify-between
     %div
       %h2.text-xl.font-semibold.text-gray-900= month_start.strftime("%B %Y")
       %p.text-sm.text-gray-600 Select a day to view upcoming dues.
-    .flex.items-center.gap-4
+    .flex.flex-col.gap-3.sm:flex-row.sm:items-center.sm:gap-4
       .inline-flex.items-center.rounded-md.border.border-emerald-200.bg-white.text-sm.font-semibold.text-emerald-700.shadow-sm
         = link_to calendar_lists_path(month: previous_month), class: "px-3 py-2 hover:bg-emerald-50" do
           &larr;
         %span.border-x.border-emerald-200.px-4.py-2= month_start.strftime("%b %Y")
         = link_to calendar_lists_path(month: next_month), class: "px-3 py-2 hover:bg-emerald-50" do
           &rarr;
-      %div.text-xs.text-gray-500
+      %div{ class: "text-xs text-gray-500 flex flex-wrap gap-2 sm:block" }
         %span.inline-flex.items-center.gap-2
           %span.inline-block.h-2.5.w-2.5.rounded-full.bg-emerald-500
           Due today
-        %span.inline-flex.items-center.gap-2.ml-4
+        %span.inline-flex.items-center.gap-2.sm:ml-4
           %span.inline-block.h-2.5.w-2.5.rounded-full.bg-emerald-200
           Due this month
 
-%div{ class: "grid grid-cols-7 gap-px bg-emerald-200 text-[11px] font-semibold text-gray-600 mb-2 rounded-lg overflow-hidden border border-emerald-200" }
+%div{ class: "grid grid-cols-7 gap-px bg-emerald-200 text-[10px] md:text-[11px] font-semibold text-gray-600 mb-2 rounded-lg overflow-hidden border border-emerald-200" }
   - day_names.each do |day|
-    %div{ class: "text-center bg-white py-2 uppercase tracking-wide border border-emerald-200" }= day
+    %div{ class: "text-center bg-white py-1.5 md:py-2.5 uppercase tracking-wide border border-emerald-200" }= day
 
 %div.grid.grid-cols-7.gap-px.bg-emerald-200.rounded-xl.overflow-hidden.border.border-emerald-200
   - (grid_start..grid_end).each do |day|
@@ -40,14 +40,14 @@
     - has_dues = entries.any?
     - base_classes = in_month ? "bg-white text-gray-700" : "bg-emerald-50 text-gray-400"
     - ring_classes = is_today ? "ring-2 ring-emerald-500 ring-inset" : ""
-    = link_to lists_path(start_date: day, end_date: day), class: "block min-h-[120px] p-3 #{base_classes} #{ring_classes} border border-emerald-200 hover:bg-emerald-100/40 transition-colors" do
+    = link_to lists_path(start_date: day, end_date: day), class: "block min-h-[72px] p-2 md:aspect-square md:min-h-0 md:p-3.5 lg:p-4 #{base_classes} #{ring_classes} border border-emerald-200 hover:bg-emerald-100/40 transition-colors overflow-hidden" do
       .flex.items-center.justify-between
-        %div.text-xs.font-semibold= day.day
+        %div{ class: "text-[11px] md:text-sm font-semibold" }= day.day
         - if has_dues
-          %span{ class: "inline-flex items-center justify-center h-5 min-w-[20px] rounded-full bg-emerald-100 text-[11px] font-semibold text-emerald-700 px-1" }= entries.size
+          %span{ class: "inline-flex items-center justify-center h-4 min-w-[18px] rounded-full bg-emerald-100 text-[10px] md:h-5 md:min-w-[20px] md:text-[11px] font-semibold text-emerald-700 px-1" }= entries.size
       - if entries.any?
-        %ul.mt-2.space-y-1
+        %ul{ class: "mt-2 space-y-1 hidden md:block" }
           - entries.first(3).each do |entry|
-            %li.text-xs.text-gray-700.truncate= entry[:list].name
+            %li.text-xs.lg:text-sm.text-gray-700.truncate= entry[:list].name
           - if entries.size > 3
             %li{ class: "text-[11px] text-gray-500" }= "+#{entries.size - 3} more"
