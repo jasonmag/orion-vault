@@ -1,7 +1,9 @@
 - month_start = @calendar_month_start
 - month_end = @calendar_month_end
-- grid_start = month_start.beginning_of_week
-- grid_end = month_end.end_of_week
+- previous_month = month_start.prev_month.strftime("%Y-%m")
+- next_month = month_start.next_month.strftime("%Y-%m")
+- grid_start = month_start.beginning_of_week(:sunday)
+- grid_end = month_end.end_of_week(:sunday)
 - day_names = Date::ABBR_DAYNAMES
 - due_map = @calendar_lists_with_due_dates.select { |entry| entry[:due_date].present? }.group_by { |entry| entry[:due_date] }
 - today = Date.current
@@ -11,13 +13,20 @@
     %div
       %h2.text-xl.font-semibold.text-gray-900= month_start.strftime("%B %Y")
       %p.text-sm.text-gray-600 Select a day to view upcoming dues.
-    %div.text-xs.text-gray-500
-      %span.inline-flex.items-center.gap-2
-        %span.inline-block.h-2.5.w-2.5.rounded-full.bg-emerald-500
-        Due today
-      %span.inline-flex.items-center.gap-2.ml-4
-        %span.inline-block.h-2.5.w-2.5.rounded-full.bg-emerald-200
-        Due this month
+    .flex.items-center.gap-4
+      .inline-flex.items-center.rounded-md.border.border-emerald-200.bg-white.text-sm.font-semibold.text-emerald-700.shadow-sm
+        = link_to calendar_lists_path(month: previous_month), class: "px-3 py-2 hover:bg-emerald-50" do
+          &larr;
+        %span.border-x.border-emerald-200.px-4.py-2= month_start.strftime("%b %Y")
+        = link_to calendar_lists_path(month: next_month), class: "px-3 py-2 hover:bg-emerald-50" do
+          &rarr;
+      %div.text-xs.text-gray-500
+        %span.inline-flex.items-center.gap-2
+          %span.inline-block.h-2.5.w-2.5.rounded-full.bg-emerald-500
+          Due today
+        %span.inline-flex.items-center.gap-2.ml-4
+          %span.inline-block.h-2.5.w-2.5.rounded-full.bg-emerald-200
+          Due this month
 
 %div{ class: "grid grid-cols-7 gap-px bg-emerald-200 text-[11px] font-semibold text-gray-600 mb-2 rounded-lg overflow-hidden border border-emerald-200" }
   - day_names.each do |day|

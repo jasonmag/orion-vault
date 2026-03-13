@@ -1,28 +1,27 @@
-%body.bg-background
-  .bg-background
-    .relative.isolate.px-6.pt-8.lg:px-8.mx-auto
-      .mx-auto.max-w-2xl.py-16.sm:py-24.lg:py-28
-        .flex.items-center.justify-between.mb-6
-          %div
-            %h1.text-2xl.font-bold Dues
-            %p.text-sm.text-gray-600 Track recurring payments and mark them done.
-          .flex.items-center.gap-3
-            = render "lists/add_list"
-        .flex.items-center.justify-between.mb-4
-          .inline-flex.rounded-md.shadow-sm{ role: "tablist" }
-            = button_to "Calendar", calendar_lists_path, method: :get, form: { class: "inline-block" }, class: "px-4 py-2 text-sm font-semibold border border-emerald-200 rounded-l-md bg-white text-emerald-700 hover:bg-emerald-50"
-            = button_to "List", lists_path, method: :get, form: { class: "inline-block -ml-px" }, class: "px-4 py-2 text-sm font-semibold border border-emerald-200 rounded-r-md bg-emerald-600 text-white border-emerald-600"
-          .text-sm.font-semibold.text-gray-700
-            %span{ data: { total_dues_label: true, paid_dues: @list_dues_paid, total_dues: @list_total_dues } }= "Total dues: #{@list_dues_paid}/#{@list_total_dues}"
+.bg-background
+  .relative.isolate.px-6.pt-8.lg:px-8.mx-auto
+    .mx-auto.max-w-2xl.py-16.sm:py-24.lg:py-28
+      .flex.items-center.justify-between.mb-6
+        %div
+          %h1.text-2xl.font-bold Dues
+          %p.text-sm.text-gray-600 Track recurring payments and mark them done.
+        .flex.items-center.gap-3
+          = render "lists/add_list"
+      .flex.items-center.justify-between.mb-4
+        .inline-flex.rounded-md.shadow-sm{ role: "tablist" }
+          = button_to "Calendar", calendar_lists_path, method: :get, form: { class: "inline-block" }, class: "px-4 py-2 text-sm font-semibold border border-emerald-200 rounded-l-md bg-white text-emerald-700 hover:bg-emerald-50"
+          = button_to "List", lists_path, method: :get, form: { class: "inline-block -ml-px" }, class: "px-4 py-2 text-sm font-semibold border border-emerald-200 rounded-r-md bg-emerald-600 text-white border-emerald-600"
+        .text-sm.font-semibold.text-gray-700
+          %span{ data: { total_dues_label: true, paid_dues: @list_dues_paid, total_dues: @list_total_dues } }= "Total dues: #{@list_dues_paid}/#{@list_total_dues}"
 
-        .rounded-xl.border.border-emerald-100.bg-emerald-50.p-5.shadow-sm
-          .flex.items-start.justify-between.mb-4
-            %div
-              %h2.text-base.font-semibold.text-gray-900 Current list
-              %p.text-xs.text-gray-600 Date range applies to this view only.
-            %details.relative
-              %summary.list-none.cursor-pointer.rounded-md.p-1.text-gray-700.hover:text-gray-900.hover:bg-emerald-50.focus:outline-none.focus-visible:ring-2.focus-visible:ring-emerald-400
-                = render "svg/gear"
-              .absolute.right-0.mt-2.w-80.rounded-lg.border.border-emerald-100.bg-white.p-4.shadow-lg.z-20
-                = render "layouts/select_dates"
-          = render "lists/check_list"
+      .rounded-xl.border.border-emerald-100.bg-emerald-50.p-5.shadow-sm
+        .flex.items-start.justify-between.mb-4
+          %div
+            %h2.text-base.font-semibold.text-gray-900 Current list
+            %p.text-xs.text-gray-600 Date range applies to this view only.
+          %details.relative
+            %summary.list-none.cursor-pointer.rounded-md.p-1.text-gray-700.hover:text-gray-900.hover:bg-emerald-50.focus:outline-none.focus-visible:ring-2.focus-visible:ring-emerald-400
+              = render "svg/gear"
+            .absolute.right-0.mt-2.w-80.rounded-lg.border.border-emerald-100.bg-white.p-4.shadow-lg.z-20
+              = render "layouts/select_dates"
+        = render "lists/check_list"

@@ -15,8 +15,9 @@ class ListsController < ApplicationController
   end
 
   def calendar
-    @calendar_month_start = Date.current.beginning_of_month
-    @calendar_month_end = Date.current.end_of_month
+    reference_date = calendar_reference_date
+    @calendar_month_start = reference_date.beginning_of_month
+    @calendar_month_end = reference_date.end_of_month
     @calendar_lists_with_due_dates = dues_in_range(@calendar_month_start, @calendar_month_end)
     @calendar_total_dues = @calendar_lists_with_due_dates.size
     @calendar_dues_paid = paid_count_for(@calendar_lists_with_due_dates)
@@ -122,6 +123,15 @@ class ListsController < ApplicationController
       end
 
       entries.count { |entry| paid_pairs[[ entry[:list].id, entry[:due_date] ]] }
+    end
+
+    def calendar_reference_date
+      month_param = params[:month].to_s
+      return Date.current unless month_param.match?(/\A\d{4}-\d{2}\z/)
+
+      Date.strptime("#{month_param}-01", "%Y-%m-%d")
+    rescue ArgumentError
+      Date.current
     end
 
     # Use callbacks to share common setup or constraints between actions.
