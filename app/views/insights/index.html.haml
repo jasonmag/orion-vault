@@ -1,32 +1,60 @@
 %body.bg-background
   .bg-background
-    .relative.isolate.px-6.pt-8.lg:px-8.mx-auto
-      .mx-auto.max-w-5xl.py-16.sm:py-24.lg:py-28
-        .flex.items-center.justify-between.mb-6
-          %h1.text-2xl.font-bold Insights
-          = link_to expenses_path, class: "text-black underline" do
+    .relative.isolate.mx-auto.px-6.pb-16.pt-8.lg:px-8
+      .mx-auto.max-w-6xl.py-12.sm:py-16
+        - currency = current_user.user_setting.default_currency
+        - total_card_label = Money.new(@card_spend * 100, currency).format(symbol: true, with_currency: false)
+        - total_cash_label = Money.new(@cash_spend * 100, currency).format(symbol: true, with_currency: false)
+        - total_cash_in_label = Money.new(@total_cash_in * 100, currency).format(symbol: true, with_currency: false)
+        - total_spend_label = Money.new(@total_spend * 100, currency).format(symbol: true, with_currency: false)
+        - net_total_label = Money.new(@net_total * 100, currency).format(symbol: true, with_currency: false)
+
+        .mb-8.flex.flex-col.gap-4.lg:flex-row.lg:items-end.lg:justify-between
+          .space-y-3
+            %span.inline-flex.items-center.rounded-full.bg-emerald-100.px-3.py-1.text-xs.font-semibold.uppercase.tracking-widest.text-emerald-700 Spending Insights
+            .space-y-2
+              %h1.text-4xl.font-black.tracking-tight.text-slate-900 Insights
+              %p.max-w-2xl.text-sm.leading-6.text-slate-600 Review six months of spending and cash-in activity to spot where your money is moving.
+          = link_to expenses_path, class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" do
             View Expenses
 
-        .grid.grid-cols-1.md:grid-cols-3.gap-6.mb-10
-          .rounded-lg.border.border-gray-200.bg-white.p-5
-            %p.text-sm.text-gray-500 Total Card Payments
-            %p.text-2xl.font-semibold.text-gray-900
-              = Money.new(@card_spend * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
-          .rounded-lg.border.border-gray-200.bg-white.p-5
-            %p.text-sm.text-gray-500 Total Cash Payments
-            %p.text-2xl.font-semibold.text-gray-900
-              = Money.new(@cash_spend * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
-          .rounded-lg.border.border-gray-200.bg-white.p-5
-            %p.text-sm.text-gray-500 Total Cash-ins
-            %p.text-2xl.font-semibold.text-gray-900
-              = Money.new(@total_cash_in * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)
+        .mb-6.grid.grid-cols-1.gap-4.lg:grid-cols-4
+          .rounded-3xl.border.border-slate-200.bg-white.p-5.shadow-sm
+            %p.text-sm.font-semibold.text-slate-500 Total Spend
+            %p.mt-3.text-3xl.font-black.text-slate-900= total_spend_label
+            %p.mt-2.text-sm.text-slate-500 Cash, card, and other outgoing payments
+          .rounded-3xl.border.border-slate-200.bg-white.p-5.shadow-sm
+            %p.text-sm.font-semibold.text-slate-500 Total Cash-ins
+            %p.mt-3.text-3xl.font-black.text-slate-900= total_cash_in_label
+            %p.mt-2.text-sm.text-slate-500 Money flowing back in
+          .rounded-3xl.border.border-slate-200.bg-white.p-5.shadow-sm
+            %p.text-sm.font-semibold.text-slate-500 Net Position
+            - net_classes = @net_total.negative? ? "text-rose-600" : "text-emerald-600"
+            %p.mt-3.text-3xl.font-black{ class: net_classes }= net_total_label
+            %p.mt-2.text-sm.text-slate-500 Cash-in minus total spend
+          .rounded-3xl.border.border-slate-200.bg-white.p-5.shadow-sm
+            %p.text-sm.font-semibold.text-slate-500 Period
+            %p.mt-3.text-2xl.font-black.text-slate-900 6 months
+            %p.mt-2.text-sm.text-slate-500 Rolling month-by-month view
 
-        .rounded-xl.border.border-gray-200.bg-white.p-6
-          .flex.items-center.justify-between.mb-4
-            %div
-              %h2.text-lg.font-semibold Monthly cashflow comparison
-              %p.text-sm.text-gray-500 Cash, Card, and Cash-in over the last 6 months
-            .flex.items-center.gap-4.text-sm.text-gray-600
+        .mb-10.grid.grid-cols-1.gap-4.md:grid-cols-3
+          .rounded-3xl.border.border-slate-200.bg-white.p-5.shadow-sm
+            %p.text-sm.font-semibold.text-slate-500 Card Payments
+            %p.mt-3.text-2xl.font-bold.text-slate-900= total_card_label
+          .rounded-3xl.border.border-slate-200.bg-white.p-5.shadow-sm
+            %p.text-sm.font-semibold.text-slate-500 Cash Payments
+            %p.mt-3.text-2xl.font-bold.text-slate-900= total_cash_label
+          .rounded-3xl.border.border-slate-200.bg-white.p-5.shadow-sm
+            %p.text-sm.font-semibold.text-slate-500 Other Payments
+            %p.mt-3.text-2xl.font-bold.text-slate-900
+              = Money.new(@other_spend * 100, currency).format(symbol: true, with_currency: false)
+
+        .rounded-3xl.border.border-slate-200.bg-white.p-6.shadow-xl
+          .mb-5.flex.flex-col.gap-4.lg:flex-row.lg:items-start.lg:justify-between
+            %div.space-y-2
+              %h2.text-xl.font-bold.text-slate-900 Monthly cashflow comparison
+              %p.text-sm.leading-6.text-slate-500 Cash, card, other payments, and cash-ins over the last 6 months.
+            .flex.flex-wrap.items-center.gap-4.text-sm.text-slate-600
               .flex.items-center.gap-2
                 %span.inline-block.h-3.w-3.rounded-full.bg-emerald-500
                 Cash Payments
@@ -41,7 +69,8 @@
                 Cash-ins
 
           - if @max_spend.zero? && @max_cash_in.zero?
-            %p.text-sm.text-gray-600 No cash activity in the last 6 months.
+            .rounded-2xl.border.border-dashed.border-slate-300.bg-slate-50.p-6.text-sm.text-slate-600
+              No cash activity in the last 6 months.
           - else
             - chart_width = 640
             - chart_height = 240
@@ -79,11 +108,11 @@
             - other_spline = spline_path.call(other_coords)
 
             .space-y-4{ data: { controller: "frequency-tabs" } }
-              .inline-flex.rounded-md.shadow-sm{ role: "tablist" }
-                %button.px-4.py-2.text-sm.font-semibold.border.border-gray-300.rounded-l-md{ type: "button", role: "tab", aria: { selected: "true", controls: "cashflow-panel-line" }, data: { action: "click->frequency-tabs#show", frequency_tabs_target: "tab", frequency_value: "line", active: "true", active_class: "bg-gray-900 text-white border-gray-900", inactive_class: "bg-white text-gray-700 hover:bg-gray-50" } } Line
-                %button.px-4.py-2.text-sm.font-semibold.border.border-gray-300.rounded-r-md.-ml-px{ type: "button", role: "tab", aria: { selected: "false", controls: "cashflow-panel-spline" }, data: { action: "click->frequency-tabs#show", frequency_tabs_target: "tab", frequency_value: "spline", active_class: "bg-gray-900 text-white border-gray-900", inactive_class: "bg-white text-gray-700 hover:bg-gray-50" } } Spline
+              .inline-flex.rounded-full.border.border-slate-200.bg-white.p-1.shadow-sm{ role: "tablist" }
+                %button.rounded-full.px-4.py-2.text-sm.font-semibold{ type: "button", role: "tab", aria: { selected: "true", controls: "cashflow-panel-line" }, data: { action: "click->frequency-tabs#show", frequency_tabs_target: "tab", frequency_value: "line", active: "true", active_class: "bg-slate-900 text-white", inactive_class: "bg-white text-slate-700 hover:bg-slate-50" } } Line
+                %button.rounded-full.px-4.py-2.text-sm.font-semibold{ type: "button", role: "tab", aria: { selected: "false", controls: "cashflow-panel-spline" }, data: { action: "click->frequency-tabs#show", frequency_tabs_target: "tab", frequency_value: "spline", active_class: "bg-slate-900 text-white", inactive_class: "bg-white text-slate-700 hover:bg-slate-50" } } Spline
 
-              %section.rounded-lg.border.border-gray-100.bg-white.p-4{ id: "cashflow-panel-line", role: "tabpanel", data: { frequency_tabs_target: "panel", frequency: "line" } }
+              %section.rounded-2xl.border.border-slate-200.bg-slate-50.p-4{ id: "cashflow-panel-line", role: "tabpanel", data: { frequency_tabs_target: "panel", frequency: "line" } }
                 %svg{ class: "w-full h-64", viewBox: "0 0 #{chart_width} #{chart_height}", role: "img", "aria-label": "Monthly cashflow line chart" }
                   %defs
                     %linearGradient{ id: "cash-in-gradient", x1: "0", y1: "0", x2: "0", y2: "1" }
@@ -116,7 +145,7 @@
                     - x = (padding + (index * x_step)).round(2)
                     %text{ x: x, y: chart_height - 6, "text-anchor": "middle", "font-size": "11", fill: "#6b7280" }= row[:month]
 
-              %section.rounded-lg.border.border-gray-100.bg-white.p-4.hidden{ id: "cashflow-panel-spline", role: "tabpanel", data: { frequency_tabs_target: "panel", frequency: "spline" } }
+              %section.rounded-2xl.border.border-slate-200.bg-slate-50.p-4.hidden{ id: "cashflow-panel-spline", role: "tabpanel", data: { frequency_tabs_target: "panel", frequency: "spline" } }
                 %svg{ class: "w-full h-64", viewBox: "0 0 #{chart_width} #{chart_height}", role: "img", "aria-label": "Monthly cashflow spline chart" }
                   %defs
                     %linearGradient{ id: "cash-in-spline-gradient", x1: "0", y1: "0", x2: "0", y2: "1" }
@@ -149,20 +178,20 @@
                     - x = (padding + (index * x_step)).round(2)
                     %text{ x: x, y: chart_height - 6, "text-anchor": "middle", "font-size": "11", fill: "#6b7280" }= row[:month]
 
-            .grid.grid-cols-1.sm:grid-cols-3.gap-4.mt-6
+            .mt-6.grid.grid-cols-1.gap-4.sm:grid-cols-2.xl:grid-cols-3
               - @monthly_rows.each do |row|
                 - net = row[:cash_in] - row[:total_spend]
-                .rounded-md.border.border-gray-100.bg-gray-50.p-3
-                  %div.text-xs.font-semibold.text-gray-500= row[:month]
-                  %div.text-sm.text-gray-700
+                .rounded-2xl.border.border-slate-200.bg-white.p-4.shadow-sm
+                  %div.text-xs.font-semibold.uppercase.tracking-widest.text-slate-500= row[:month]
+                  %div.mt-3.text-sm.text-slate-700
                     = "Cash: #{Money.new(row[:cash] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
-                  %div.text-sm.text-gray-700
+                  %div.text-sm.text-slate-700
                     = "Card: #{Money.new(row[:card] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
                   - if row[:other].positive?
-                    %div.text-sm.text-gray-700
+                    %div.text-sm.text-slate-700
                       = "Other: #{Money.new(row[:other] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
-                  %div.text-sm.text-gray-700
+                  %div.text-sm.text-slate-700
                     = "Cash-in: #{Money.new(row[:cash_in] * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"
                   - net_class = net.negative? ? "text-rose-600" : "text-emerald-600"
-                  %div.text-sm.font-semibold{ class: net_class }
+                  %div.mt-2.text-sm.font-semibold{ class: net_class }
                     = "Net: #{Money.new(net * 100, current_user.user_setting.default_currency).format(symbol: true, with_currency: false)}"

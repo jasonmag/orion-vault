@@ -1,70 +1,87 @@
 %body.bg-background
   .bg-background
-    .relative.isolate.px-6.pt-8.lg:px-8.mx-auto
-      .mx-auto.max-w-3xl.py-16.sm:py-24.lg:py-28
-        .flex.items-start.justify-between.mb-6
-          %div
-            %h1.text-2xl.font-bold= @list.name
-            %p.text-sm.text-gray-600 Payment details and schedule information.
-          .flex.items-center.gap-3
-            = link_to "Edit", edit_list_path(@list), class: "inline-flex items-center rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800"
-            = link_to "Back to Dues", lists_path, class: "inline-flex items-center rounded-md border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-            = link_to "Delete", @list, data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "inline-flex items-center rounded-md border border-red-200 px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
+    .relative.isolate.mx-auto.px-6.pb-16.pt-8.lg:px-8
+      .mx-auto.max-w-5xl.py-12.sm:py-16
+        - settings = current_user&.user_setting
+        - currency = settings&.default_currency || "AUD"
+        - price_label = Money.new(@list.price * 100, currency).format(symbol: true, with_currency: false)
+        - frequency_label = @list.payment_schedule&.human_readable_frequency || "No schedule"
+        - start_date_label = @list.effective_start_date.present? ? @list.effective_start_date.strftime("%B %d, %Y") : "N/A"
+        - end_date_label = @list.effective_end_date.present? ? @list.effective_end_date.strftime("%B %d, %Y") : "No end date"
+
+        .mb-8.flex.flex-col.gap-4.lg:flex-row.lg:items-end.lg:justify-between
+          %div.space-y-3
+            %span.inline-flex.items-center.rounded-full.bg-emerald-100.px-3.py-1.text-xs.font-semibold.uppercase.tracking-widest.text-emerald-700 List Details
+            %div.space-y-2
+              %h1.text-4xl.font-black.tracking-tight.text-slate-900= @list.name
+              %p.max-w-2xl.text-sm.leading-6.text-slate-600 Payment details, effective dates, and schedule settings for this recurring due.
+          .flex.flex-wrap.items-center.gap-3
+            = link_to "Edit", edit_list_path(@list), class: "inline-flex items-center rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+            = link_to "Back to Dues", lists_path, class: "inline-flex items-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            = link_to "Delete", @list, data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "inline-flex items-center rounded-full border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50"
 
         - if notice.present?
-          %p#notice.rounded-md.bg-emerald-50.px-3.py-2.text-sm.font-semibold.text-emerald-700= notice
+          %p#notice.mb-6.rounded-2xl.bg-emerald-50.px-4.py-3.text-sm.font-semibold.text-emerald-700= notice
 
-        .rounded-xl.border.border-gray-200.bg-white.p-6.shadow-sm
-          %h2.text-lg.font-semibold.text-gray-900.mb-4 Details
-          %dl.grid.grid-cols-1.gap-6.sm:grid-cols-2
-            %div
-              %dt.text-sm.font-medium.text-gray-500 Name
-              %dd.text-sm.text-gray-900= @list.name
-            %div
-              %dt.text-sm.font-medium.text-gray-500 Price
-              %dd.text-sm.text-gray-900
-                - settings = current_user&.user_setting
-                - currency = settings&.default_currency || "AUD"
-                = Money.new(@list.price * 100, currency).format(symbol: true, with_currency: false)
-            %div
-              %dt.text-sm.font-medium.text-gray-500 Description
-              %dd.text-sm.text-gray-900= @list.description.presence || "—"
-            %div
-              %dt.text-sm.font-medium.text-gray-500 Effective start date
-              %dd.text-sm.text-gray-900
-                - if @list.effective_start_date.present?
-                  = @list.effective_start_date.strftime("%B %d, %Y")
-                - else
-                  N/A
-            %div
-              %dt.text-sm.font-medium.text-gray-500 Effective end date
-              %dd.text-sm.text-gray-900
-                - if @list.effective_end_date.present?
-                  = @list.effective_end_date.strftime("%B %d, %Y")
-                - else
-                  No end date
+        .mb-6.grid.grid-cols-1.gap-4.md:grid-cols-3
+          .rounded-3xl.border.border-slate-200.bg-white.p-5.shadow-sm
+            %p.text-sm.font-semibold.text-slate-500 Price
+            %p.mt-3.text-3xl.font-black.text-slate-900= price_label
+            %p.mt-2.text-sm.text-slate-500 Current amount for this due
+          .rounded-3xl.border.border-slate-200.bg-white.p-5.shadow-sm
+            %p.text-sm.font-semibold.text-slate-500 Frequency
+            %p.mt-3.text-2xl.font-black.text-slate-900= frequency_label
+            %p.mt-2.text-sm.text-slate-500 Schedule cadence
+          .rounded-3xl.border.border-slate-200.bg-white.p-5.shadow-sm
+            %p.text-sm.font-semibold.text-slate-500 Effective Window
+            %p.mt-3.text-lg.font-bold.text-slate-900= start_date_label
+            %p.mt-2.text-sm.text-slate-500= end_date_label
 
-        .rounded-xl.border.border-gray-200.bg-white.p-6.shadow-sm.mt-6
-          %h2.text-lg.font-semibold.text-gray-900.mb-4 Payment schedule
-          - if @list.payment_schedule
-            %dl.grid.grid-cols-1.gap-6.sm:grid-cols-2
-              %div
-                %dt.text-sm.font-medium.text-gray-500 Frequency
-                %dd.text-sm.text-gray-900= @list.payment_schedule.human_readable_frequency
-              - if @list.payment_schedule.monthly? || @list.payment_schedule.yearly?
-                %div
-                  %dt.text-sm.font-medium.text-gray-500 Day of month
-                  %dd.text-sm.text-gray-900= @list.payment_schedule.day_of_month&.ordinalize || "N/A"
-              - if @list.payment_schedule.weekly? || @list.payment_schedule.biweekly?
-                %div
-                  %dt.text-sm.font-medium.text-gray-500 Day of week
-                  %dd.text-sm.text-gray-900= @list.payment_schedule.day_of_week&.ordinalize || "N/A"
-              - if @list.payment_schedule.yearly?
-                %div
-                  %dt.text-sm.font-medium.text-gray-500 Month of year
-                  %dd.text-sm.text-gray-900= @list.payment_schedule.month_of_year&.ordinalize || "N/A"
-              %div
-                %dt.text-sm.font-medium.text-gray-500 Notify days before due
-                %dd.text-sm.text-gray-900= @list.payment_schedule.notification_lead_time
-          - else
-            %p.text-sm.text-red-600 No payment schedule is associated with this list item.
+        .grid.grid-cols-1.gap-6.lg:grid-cols-5
+          .lg:col-span-3
+            .rounded-3xl.border.border-slate-200.bg-white.p-6.shadow-xl
+              %h2.mb-5.text-xl.font-bold.text-slate-900 Details
+              %dl.grid.grid-cols-1.gap-6.sm:grid-cols-2
+                %div.space-y-2
+                  %dt.text-xs.font-semibold.uppercase.tracking-widest.text-slate-500 Name
+                  %dd.text-sm.font-medium.text-slate-900= @list.name
+                %div.space-y-2
+                  %dt.text-xs.font-semibold.uppercase.tracking-widest.text-slate-500 Price
+                  %dd.text-sm.font-medium.text-slate-900= price_label
+                %div.space-y-2.sm:col-span-2
+                  %dt.text-xs.font-semibold.uppercase.tracking-widest.text-slate-500 Description
+                  %dd.text-sm.leading-6.text-slate-700= @list.description.presence || "No description provided."
+                %div.space-y-2
+                  %dt.text-xs.font-semibold.uppercase.tracking-widest.text-slate-500 Effective start date
+                  %dd.text-sm.font-medium.text-slate-900= start_date_label
+                %div.space-y-2
+                  %dt.text-xs.font-semibold.uppercase.tracking-widest.text-slate-500 Effective end date
+                  %dd.text-sm.font-medium.text-slate-900= end_date_label
+
+          .lg:col-span-2
+            .rounded-3xl.border.border-slate-200.bg-white.p-6.shadow-xl
+              %h2.mb-5.text-xl.font-bold.text-slate-900 Payment schedule
+              - if @list.payment_schedule
+                %dl.space-y-4
+                  .rounded-2xl.bg-slate-50.p-4
+                    %dt.text-xs.font-semibold.uppercase.tracking-widest.text-slate-500 Frequency
+                    %dd.mt-2.text-sm.font-semibold.text-slate-900= @list.payment_schedule.human_readable_frequency
+                  - if @list.payment_schedule.monthly? || @list.payment_schedule.yearly? || @list.payment_schedule.semi_monthly?
+                    .rounded-2xl.bg-slate-50.p-4
+                      %dt.text-xs.font-semibold.uppercase.tracking-widest.text-slate-500 Day of month
+                      %dd.mt-2.text-sm.font-semibold.text-slate-900= @list.payment_schedule.day_of_month&.ordinalize || "N/A"
+                  - if @list.payment_schedule.weekly? || @list.payment_schedule.biweekly?
+                    .rounded-2xl.bg-slate-50.p-4
+                      %dt.text-xs.font-semibold.uppercase.tracking-widest.text-slate-500 Day of week
+                      - days = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ]
+                      %dd.mt-2.text-sm.font-semibold.text-slate-900= @list.payment_schedule.day_of_week.present? ? days[@list.payment_schedule.day_of_week] : "N/A"
+                  - if @list.payment_schedule.yearly?
+                    .rounded-2xl.bg-slate-50.p-4
+                      %dt.text-xs.font-semibold.uppercase.tracking-widest.text-slate-500 Month of year
+                      %dd.mt-2.text-sm.font-semibold.text-slate-900= @list.payment_schedule.month_of_year.present? ? Date::MONTHNAMES[@list.payment_schedule.month_of_year] : "N/A"
+                  .rounded-2xl.bg-slate-50.p-4
+                    %dt.text-xs.font-semibold.uppercase.tracking-widest.text-slate-500 Notify days before due
+                    %dd.mt-2.text-sm.font-semibold.text-slate-900= @list.payment_schedule.notification_lead_time
+              - else
+                .rounded-2xl.border.border-dashed.border-red-200.bg-red-50.p-4.text-sm.text-red-600
+                  No payment schedule is associated with this list item.

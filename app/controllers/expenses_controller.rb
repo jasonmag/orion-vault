@@ -46,6 +46,8 @@ class ExpensesController < ApplicationController
 
   private
 
+  PER_PAGE_OPTIONS = [ 10, 25, 50, 100 ].freeze
+
   def expense_params
     params.require(:expense).permit(:name, :amount, :paid_at, :payment_method, :credit_card_type_id)
   end
@@ -64,7 +66,9 @@ class ExpensesController < ApplicationController
   end
 
   def load_expenses
-    @per_page = 10
+    @per_page_options = self.class::PER_PAGE_OPTIONS
+    @per_page = params.fetch(:per_page, @per_page_options.first).to_i
+    @per_page = @per_page_options.first unless @per_page_options.include?(@per_page)
     @page = params.fetch(:page, 1).to_i
     @page = 1 if @page < 1
 

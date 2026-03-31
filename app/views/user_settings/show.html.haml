@@ -1,44 +1,58 @@
 .bg-background
-  .relative.isolate.px-6.pt-14.lg:px-8.mx-auto
-    .mx-auto.max-w-2xl.py-16.sm:py-24.lg:py-28
-      %h1.text-3xl.font-bold.text-center.mb-4 Settings
-      %p.text-center.text-gray-600.mb-6 Changes are saved automatically.
+  .relative.isolate.mx-auto.px-6.pb-16.pt-10.lg:px-8
+    .mx-auto.max-w-5xl.py-12.sm:py-16
+      .mb-8.flex.flex-col.gap-4.lg:flex-row.lg:items-end.lg:justify-between
+        .space-y-3
+          %span.inline-flex.items-center.rounded-full.bg-emerald-100.px-3.py-1.text-xs.font-semibold.uppercase.tracking-widest.text-emerald-700 Preferences
+          .space-y-2
+            %h1.text-4xl.font-black.tracking-tight.text-slate-900 Settings
+            %p.max-w-2xl.text-sm.leading-6.text-slate-600 Update how dues behave across your account. Changes are saved automatically as you edit.
 
       - autosave_data = { controller: "autosave", autosave_delay_value: 400, action: "input->autosave#queueSubmit change->autosave#queueSubmit turbo:submit-end->autosave#handleSubmitEnd", autosave_target: "form" }
 
-      = form_with model: @user_setting, url: user_setting_path, method: :post, data: autosave_data do |f|
-        = render "form_field", f: f
+      .grid.grid-cols-1.gap-6.lg:grid-cols-5
+        .lg:col-span-3
+          .rounded-3xl.border.border-slate-200.bg-white.p-6.shadow-xl
+            .mb-6.space-y-2
+              %h2.text-xl.font-bold.text-slate-900 Account defaults
+              %p.text-sm.leading-6.text-slate-500 Configure your date range, currency, and reminder timing.
+            = form_with model: @user_setting, url: user_setting_path, method: :post, data: autosave_data do |f|
+              = render "form_field", f: f
 
-      .rounded-xl.border.border-gray-200.bg-white.p-6.shadow-sm.mt-8
-        %h2.text-lg.font-semibold.text-gray-900.mb-4 Credit Card Types
-        %p.text-sm.text-gray-600.mb-4 Add a bank name and the last 4 digits of the card.
+        .lg:col-span-2
+          .rounded-3xl.border.border-slate-200.bg-white.p-6.shadow-xl
+            .mb-6.space-y-2
+              %h2.text-xl.font-bold.text-slate-900 Credit Card Types
+              %p.text-sm.leading-6.text-slate-500 Add a bank name and the last 4 digits so card-based expense entries are faster and more consistent.
 
-        - if @credit_card_type&.errors&.any?
-          .rounded-md.bg-red-50.px-3.py-2.text-sm.font-semibold.text-red-700.mb-4
-            = @credit_card_type.errors.full_messages.to_sentence
+            - if @credit_card_type&.errors&.any?
+              .mb-4.rounded-2xl.bg-red-50.px-4.py-3.text-sm.font-semibold.text-red-700
+                = @credit_card_type.errors.full_messages.to_sentence
 
-        - details_open = @credit_card_type&.errors&.any?
-        %details{ open: details_open, class: "rounded-lg border border-dashed border-gray-200 p-4" }
-          %summary.inline-flex.items-center.rounded-md.bg-gray-900.px-3.py-2.text-sm.font-semibold.text-white.shadow-sm.hover:bg-gray-800.cursor-pointer
-            Add Credit Card Type
-          .mt-4
-            = form_with model: @credit_card_type, url: user_setting_credit_card_types_path, method: :post do |f|
-              .grid.grid-cols-1.gap-4.sm:grid-cols-2
-                .field
-                  = f.label :bank_name, "Bank Name", class: "block text-gray-700 font-bold mb-2"
-                  = f.text_field :bank_name, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                .field
-                  = f.label :last4, "Last 4 Digits", class: "block text-gray-700 font-bold mb-2"
-                  = f.text_field :last4, maxlength: 4, inputmode: "numeric", pattern: "[0-9]*", class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            - details_open = @credit_card_type&.errors&.any?
+            %details.rounded-2xl.border.border-dashed.border-slate-300.bg-slate-50.p-4{ open: details_open }
+              %summary.inline-flex.cursor-pointer.items-center.rounded-full.bg-slate-900.px-4.py-2.text-sm.font-semibold.text-white.shadow-sm.transition.hover:bg-slate-800
+                Add Credit Card Type
               .mt-4
-                = f.submit "Add Card", class: "inline-flex items-center rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800"
+                = form_with model: @credit_card_type, url: user_setting_credit_card_types_path, method: :post do |f|
+                  .grid.grid-cols-1.gap-4
+                    .field.space-y-2
+                      = f.label :bank_name, "Bank Name", class: "block text-sm font-semibold text-slate-700"
+                      = f.text_field :bank_name, class: "w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+                    .field.space-y-2
+                      = f.label :last4, "Last 4 Digits", class: "block text-sm font-semibold text-slate-700"
+                      = f.text_field :last4, maxlength: 4, inputmode: "numeric", pattern: "[0-9]*", class: "w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+                  .mt-4
+                    = f.submit "Add Card", class: "inline-flex items-center rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
 
-        - if @credit_card_types.present?
-          %ul.divide-y.divide-gray-200.mt-6
-            - @credit_card_types.each do |card_type|
-              %li.py-3.flex.items-center.justify-between
-                %div
-                  %p.text-sm.font-medium.text-gray-900= card_type.bank_name
-                  %p.text-xs.text-gray-500= "**** #{card_type.last4}"
-        - else
-          %p.text-sm.text-gray-500.mt-6 No credit card types added yet.
+            - if @credit_card_types.present?
+              %ul.mt-6.space-y-3
+                - @credit_card_types.each do |card_type|
+                  %li.flex.items-center.justify-between.rounded-2xl.border.border-slate-200.bg-slate-50.p-4
+                    %div
+                      %p.text-sm.font-semibold.text-slate-900= card_type.bank_name
+                      %p.text-xs.text-slate-500= "**** #{card_type.last4}"
+                    %span.inline-flex.items-center.rounded-full.bg-white.px-3.py-1.text-xs.font-semibold.text-slate-600 Saved
+            - else
+              .mt-6.rounded-2xl.border.border-dashed.border-slate-300.bg-slate-50.p-5.text-sm.text-slate-500
+                No credit card types added yet.

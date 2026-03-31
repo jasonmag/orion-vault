@@ -1,20 +1,20 @@
 .space-y-5
-  .field
-    = f.label :default_date_range_list_display, "Display Days from Current day", class: "block text-gray-700 font-bold mb-2"
+  .field.space-y-2
+    = f.label :default_date_range_list_display, "Display Days from Current day", class: "block text-sm font-semibold text-slate-700"
     = f.number_field :default_date_range_list_display,
-      class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline",
+      class: "w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100",
       min: 1
 
-  .field
-    = f.label :default_currency, "Default Currency", class: "block text-gray-700 font-bold mb-2"
+  .field.space-y-2
+    = f.label :default_currency, "Default Currency", class: "block text-sm font-semibold text-slate-700"
     - currency_options = Money::Currency.table.values.map { |currency| ["#{currency[:iso_code]} (#{currency[:symbol]})", currency[:iso_code]] }
     = f.select :default_currency,
       options_for_select(currency_options, @user_setting.default_currency),
       {},
-      class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      class: "w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
 
-  .field
-    = f.label :notification_lead_time, "Notify days before due", class: "block text-gray-700 font-bold mb-2"
+  .field.space-y-2
+    = f.label :notification_lead_time, "Notify days before due", class: "block text-sm font-semibold text-slate-700"
     = f.number_field :notification_lead_time,
-      class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline",
+      class: "w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100",
       min: 0
